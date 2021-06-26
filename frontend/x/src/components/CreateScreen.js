@@ -67,9 +67,7 @@ export class CreateScreen extends Component {
         let formControl = []
 
         if (values.workouts == null) {
-            let workoutName = <TextField label="Name of Workout" style={styles.textfield} onChange={fieldChange('roomName', 1)} defaultValue={values.RoomName} variant="outlined" />
-                formControl.push(workoutName);
-                let workoutLength = <TimeField
+            let workoutSection = <div className = "workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={fieldChange('roomName', 1)} defaultValue={values.RoomName} variant="outlined" /><TimeField
                                         value={time}                     // {String}   required, format '00:00' or '00:00:00'
                                         onChange={(value) => {fieldChange('time', 1)}}      // {Function} required
                                         colon=":"                        
@@ -77,36 +75,36 @@ export class CreateScreen extends Component {
                                         style={styles.textfield}
                                         input={<TextField label="Time for Interval" style={styles.textfield} value={time} variant="outlined" />}                         
                                     />
-                formControl.push(workoutLength)
-                let workoutType = <div className = "formContainer"><FormControl component="fieldset">
-                <FormLabel component="legend">Interval Type</FormLabel>
+                <div className = "formContainer"><FormControl component="fieldset">
                 <RadioGroup aria-label="workoutType" name="private1" value={values.workoutType} onChange={fieldChange('workoutType')}>
                     <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
                     <FormControlLabel value="break" control={<Radio />} label="Break" />
                 </RadioGroup>
                 </FormControl></div>
-                formControl.push(workoutType)
+                </div>
+                formControl.push(workoutSection)
         } else {
             for(var i=0; i < values.workouts.length + 1; i++) {
-                let workoutName = <TextField label="Name of Workout" style={styles.textfield} onChange={fieldChange('roomName')} defaultValue={values.RoomName} variant="outlined" />
-                formControl.push(workoutName);
-                let workoutLength = <TimeField
-                                        value={time}                     // {String}   required, format '00:00' or '00:00:00'
-                                        onChange={(value) => {fieldChange('time')}}      // {Function} required
-                                        colon=":"                        
-                                        showSeconds
-                                        style={styles.textfield}
-                                        input={<TextField label="Time for Interval" value={time} variant="outlined" />}                      
-                                    />
-                formControl.push(workoutLength)
-                let workoutType = <FormControl component="fieldset">
-                <FormLabel component="legend">Interval Type</FormLabel>
-                <RadioGroup aria-label="workoutType" name="private1" value={values.workoutType} onChange={fieldChange('workoutType')}>
-                    <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
-                    <FormControlLabel value="break" control={<Radio />} label="Break" />
+                let workoutSection = <div className = "workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={fieldChange('roomName', 1)} defaultValue={values.RoomName} variant="outlined" /><TimeField
+                                value={time}                     // {String}   required, format '00:00' or '00:00:00'
+                                onChange={(value) => {fieldChange('time', 1)}}      // {Function} required
+                                colon=":"                        
+                                showSeconds  
+                                style={styles.textfield}
+                                input={<TextField label="Time for Interval" style={styles.textfield} value={time} variant="outlined" />}                         
+                            />
+                <div className = "formContainer"><FormControl component="fieldset">
+                <RadioGroup aria-label="workoutType" name={"private" + i} value={values.workoutType} onChange={fieldChange('workoutType')}>
+                <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
+                <FormControlLabel value="break" control={<Radio />} label="Break" />
                 </RadioGroup>
                 </FormControl>
-                formControl.push(workoutType)
+                </div>
+                <div className = "fileUploadContainer">
+                    
+                </div>
+                </div>
+                formControl.push(workoutSection)
             }
         }
         let addMore1 = <div><Divider /><br /></div>

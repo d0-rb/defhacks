@@ -45,3 +45,6 @@ div.wrapper .MuiDivider-root{ background: #ddd!important; margin-top: 20px!impor
 div.wrapper h3{
     padding-left: 10px;
 }
+.workout-fill-in{
+    padding:5px 10px;
+}
