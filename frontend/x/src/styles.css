@@ -6,3 +6,24 @@
 .dark-background {
     background-color: #212121;
 }
+
+.mid-background {
+    background-color: #333333;
+}
+
+.vert-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.horiz-flex {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.flex-fill {
+    flex-grow: 1;
+}
