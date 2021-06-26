@@ -19,7 +19,7 @@ export class Home extends Component {
     state = {
         step: 1,
         PrivateKeyCode: '',
-        workouts: [],
+        workouts: [["", "00:00:00", "", ""]],
         Name: '',
     }
 
@@ -41,20 +41,21 @@ export class Home extends Component {
         })
     }
 
-    changeWorkouts = (e, item, listNumber) => {
+    changeWorkouts = input => (e, item) => {
+        var listNumber = e.target.name[e.target.name.length -1];
         var dictSimple={"roomName": 0, "time": 1, "workoutType": 2, "gif": 3}
         const { workouts } = this.state;
         var finalArray = workouts
-        finalArray[listNumber][dictSimple[item]] = e.target.value
+        finalArray[listNumber][dictSimple[input]] = e.target.value
         var workoutsObject = { workouts: finalArray }
 
         this.setState(workoutsObject);
     }
 
     render() {
-        const { step,PrivateKeyCode, Name, KeyCode, workouts, time, workoutType } = this.state;
+        const { step,PrivateKeyCode, Name,  workouts, time, workoutType } = this.state;
         const values = { PrivateKeyCode, Name };
-        const values2 = { Name, KeyCode,  workouts, time, workoutType};
+        const values2 = { Name,  workouts, time, workoutType};
         
         switch(step) {
             case 1: 
@@ -69,14 +70,11 @@ export class Home extends Component {
             case 2:
                 return (
                     <CreateScreen
-                        prevQuestion={this.prevQuestion}
-                        nextQuestion={this.nextQuestion}
-                        nextForm={this.nextForm}
-                        prevForm={this.prevForm}
                         fieldChange={this.fieldChange}
                         workouts={this.workouts}
                         values={values2}
                         time={time}
+                        changeWorkouts={this.changeWorkouts}
                     />
                 )
             case 3:

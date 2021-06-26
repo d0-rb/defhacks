@@ -27,11 +27,11 @@ const useStyles = makeStyles({
 
 export default function WorkoutCards(props) {
     const classes = useStyles();
-    const { createWorkoutItems, workouts } = props;
+    const { createWorkoutItems } = props;
     
     return (
         <div className="all-workouts">
-            {createWorkoutItems(workouts)}
+            {createWorkoutItems()}
         </div>
     );
 }
