@@ -15,7 +15,6 @@ const styles = {
 }
 
 export class Home extends Component {
-
     state = {
         step: 1,
         PrivateKeyCode: '',
@@ -72,14 +71,14 @@ export class Home extends Component {
     }
 
     render() {
-        const { step,PrivateKeyCode, Name,  workouts, time, workoutType, RoomName, WorkoutName, privatek } = this.state;
+        const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek } = this.state;
         const values = { PrivateKeyCode, Name };
-        const values2 = { Name,  workouts, time, workoutType, RoomName, WorkoutName, privatek};
-        
-        switch(step) {
-            case 1: 
+        const values2 = { Name, workouts, time, workoutType, RoomName, WorkoutName, privatek };
+
+        switch (step) {
+            case 1:
                 return (
-                    <InitialScreen 
+                    <InitialScreen
                         joinMeeting={this.joinMeeting}
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
@@ -99,11 +98,10 @@ export class Home extends Component {
                 )
             case 3:
                 return <VideoScreen
-                            submitPage={this.submitPage}
-                    />
+                    submitPage={this.submitPage}
+                />
             default:
-
-         }
+        }
     }
 }
 

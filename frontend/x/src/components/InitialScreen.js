@@ -9,7 +9,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import green from '@material-ui/core/colors/green';
 
-
 const theme = createMuiTheme({
     palette: {
         primary: {
