@@ -36,3 +36,75 @@
     transform: rotate(360deg);
   }
 }
+div.loader{ 
+  display: none;
+  -moz-animation: cssAnimation 0s ease-in 2s forwards;
+    /* Firefox */
+    -webkit-animation: cssAnimation 0s ease-in 2s forwards;
+    /* Safari and Chrome */
+    -o-animation: cssAnimation 0s ease-in 2s forwards;
+    /* Opera */
+    animation: cssAnimation 0s ease-in 2s forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+@keyframes cssAnimation {
+  to {
+      width:0;
+      height:0;
+      overflow:hidden;
+  }
+}
+@-webkit-keyframes cssAnimation {
+  to {
+      width:0;
+      height:0;
+      visibility:hidden;
+  }
+}
+div.groups{
+  display:flex;
+  flex-direction:row;
+}
+div.group{
+  width: 49.5%;
+  vertical-align: top;
+}
+.main-list{ 
+  color: white;
+  max-width: 350px;
+  max-height: 330px;
+  background-color: #333;
+  border-radius: 4px;
+  overflow: auto;
+  padding: 15px!important;
+  box-sizing: border-box;
+}
+div.meetings-button{
+  width: 100%;
+  background-color: #333;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  padding: 4px;
+}
+.create-meeting{ 
+  height: 70px;
+}
+.join-private-meeting{
+  height: 220px;
+}
+#pkc{
+  color:white;
+}
+#pkc-label{
+  color:white;
+}
+#name{
+  color:white
+}
+#name-label{
+  color:white;
+}
+div.meetings-button div:first-child{
+  margin: 15px;
+}

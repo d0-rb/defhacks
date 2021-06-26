@@ -1,11 +1,11 @@
 import './App.css';
-import JitsiComponent from './components/jitsiComponent';
+import Home from './components/home';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <JitsiComponent />
+        <Home />
       </header>
     </div>
   );

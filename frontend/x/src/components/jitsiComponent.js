@@ -16,6 +16,7 @@ export const JitsiComponent = () => {
         displayName={displayName}
         password={password}
         loadingComponent={Loader}
+        frameStyle={{display: 'block'}}
         onAPILoad={JitsiMeetAPI => console.log('Good Morning everyone!')}
       />)
     : (
