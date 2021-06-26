@@ -48,3 +48,6 @@ div.wrapper h3{
 .workout-fill-in{
     padding:5px 10px;
 }
+.MuiOutlinedInput-input{
+    color: white!important
+}
