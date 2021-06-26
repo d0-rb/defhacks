@@ -3,12 +3,28 @@
     height: 100%;
 }
 
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
 .dark-background {
     background-color: #212121;
 }
 
 .mid-background {
     background-color: #333333;
+}
+
+.light-background {
+    background-color: #4d4d4d;
+}
+
+.white-background {
+    background-color: #e6ffe6;
 }
 
 .vert-flex {

@@ -1,5 +1,36 @@
+.hide-top {
+    height: 0vh;
+    transition: height .5s;
+}
+
+.hide-top.open {
+    height: 10vh;
+}
+
+.checkpoint {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 2px;
+    height: 80%;
+}
+
+.checkpoint-container {
+    position: relative;
+}
+
+#workout-checkpoints {
+    display: flex;
+}
+
 #bottom-bar {
     width: 100%;
     min-height: 100px;
     height: 22%;
+}
+
+#timeline {
+    width: 100%;
+    min-height: 20px;
+    height: 3%;
 }
