@@ -3,7 +3,7 @@ import '../styles.css';
 
 function Meeting() {
   return (
-    <div className="dark-background full-size">
+    <div className="full-size">
       yuhh
     </div>
   );
