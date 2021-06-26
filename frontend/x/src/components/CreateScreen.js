@@ -63,24 +63,28 @@ export class CreateScreen extends Component {
 
     fileUploadHandler = (e) => {
         console.log(e)
+        var data;
         var selectedFile = e.target.files[0];
         const fd = new FormData();
         fd.append('name', e.target.files[0].name)
         console.log(selectedFile)
         var reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             // The file's text will be printed here
-            console.log(event.target.result)
-            fd.append('data', event.target.result);
-          };
+            data = event.target.result;
+            fd.append('data', data);
+            axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/images', fd, {
+                onUploadProgress: progressEvent => {
+                    console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                }
+            }).then(
+                res => {
+                    console.log(res)
+                }
+            )
+        };
         reader.readAsDataURL(selectedFile);
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/images', fd, {onUploadProgress: progressEvent =>{
-            console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
-        }}).then(
-            res=> {
-                console.log(res)
-            }
-        )
+        console.log(fd)
     }
 
     createWorkoutItems = () => {
@@ -88,51 +92,28 @@ export class CreateScreen extends Component {
 
         let formControl = []
 
-        if (values.workouts == null) {
-            let workoutSection = <div className = "workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={changeWorkouts("roomName", 0)} defaultValue={values.RoomName} variant="outlined" /><TimeField
-                                        value={time}                     // {String}   required, format '00:00' or '00:00:00'
-                                        onChange={(value) => {changeWorkouts("time", 0)}}      // {Function} required
-                                        colon=":"                        
-                                        showSeconds  
-                                        style={styles.textfield}
-                                        input={<TextField label="Time for Interval" style={styles.textfield} value={time} variant="outlined" />}                         
-                                    />
-                <div className = "formContainer"><FormControl component="fieldset">
-                <RadioGroup aria-label="workoutType" name="private1" value={values.workoutType} onChange={changeWorkouts("workoutType", 0)}>
-                    <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
-                    <FormControlLabel value="break" control={<Radio />} label="Break" />
-                </RadioGroup>
-                </FormControl></div>
-                <div className = "fileUploadContainer">
-                    <input type="file" name={"file"} id={"file"} style={{display: "none"}} onChange={this.fileUploadHandler} />
-                    <label htmlFor={"file"}><Button variant="contained" color="secondary" style={styles.button}>Select Photo For Interval</Button></label>
-                </div>
-                </div>
-                formControl.push(workoutSection)
-        } else {
-            for(var i=0; i < values.workouts.length; i++) {
-                let workoutSection = <div className = "workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={changeWorkouts("roomName", i)} defaultValue={values.RoomName} variant="outlined" /><TimeField
-                                value={time}                     // {String}   required, format '00:00' or '00:00:00'
-                                onChange={(value) => {changeWorkouts("time", i)}}      // {Function} required
-                                colon=":"                        
-                                showSeconds  
-                                style={styles.textfield}
-                                input={<TextField label="Time for Interval" style={styles.textfield} value={time} variant="outlined" />}                         
-                            />
-                <div className = "formContainer"><FormControl component="fieldset">
-                <RadioGroup aria-label="workoutType" name={"private" + i} value={values.workoutType} onChange={changeWorkouts("workoutType", i)}>
-                <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
-                <FormControlLabel value="break" control={<Radio />} label="Break" />
-                </RadioGroup>
+        for (var i = 0; i < values.workouts.length; i++) {
+            let workoutSection = <div className="workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={changeWorkouts("roomName", i)} defaultValue={values.RoomName} variant="outlined" /><TimeField
+                value={time}                     // {String}   required, format '00:00' or '00:00:00'
+                onChange={(value) => { changeWorkouts("time", i) }}      // {Function} required
+                colon=":"
+                showSeconds
+                style={styles.textfield}
+                input={<TextField label="Time for Interval" style={styles.textfield} value={time} variant="outlined" />}
+            />
+                <div className="formContainer"><FormControl component="fieldset">
+                    <RadioGroup aria-label="workoutType" name={"private" + i} value={values.workoutType} onChange={changeWorkouts("workoutType", i)}>
+                        <FormControlLabel value="exercise" control={<Radio />} label="Exercise" />
+                        <FormControlLabel value="break" control={<Radio />} label="Break" />
+                    </RadioGroup>
                 </FormControl>
                 </div>
-                <div className = "fileUploadContainer">
-                    <input type="file" name={"file" + i} id={"file" + i}  onChange={this.fileUploadHandler}/>
+                <div className="fileUploadContainer">
+                    <input type="file" name={"file" + i} id={"file" + i} onChange={this.fileUploadHandler} />
                     <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button}>Select Photo For Interval</Button></label>
                 </div>
-                </div>
-                formControl.push(workoutSection)
-            }
+            </div>
+            formControl.push(workoutSection)
         }
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
@@ -141,40 +122,40 @@ export class CreateScreen extends Component {
         return formControl
     }
 
-    render() {
-        const { values, fieldChange, workouts } = this.props;
+render() {
+    const { values, fieldChange, workouts } = this.props;
 
-        return (
-            <MuiThemeProvider theme={theme}>
-                <React.Fragment>
-                    <div className="wrapper">
-                        <div className="top-container">
-                            <h1>Create Your Exercise Routine</h1>
-                            <p>Start Your Fitness Jouney Today</p>
-                        </div>
-                        <div className="form-container">
-                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('name')} defaultValue={values.Name} variant="outlined" />
-                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('roomName')} defaultValue={values.RoomName} variant="outlined" />
-                            <div className="formContainer">
-                                <FormControl component="fieldset">
+    return (
+        <MuiThemeProvider theme={theme}>
+            <React.Fragment>
+                <div className="wrapper">
+                    <div className="top-container">
+                        <h1>Create Your Exercise Routine</h1>
+                        <p>Start Your Fitness Jouney Today</p>
+                    </div>
+                    <div className="form-container">
+                        <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('name')} defaultValue={values.Name} variant="outlined" />
+                        <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('roomName')} defaultValue={values.RoomName} variant="outlined" />
+                        <div className="formContainer">
+                            <FormControl component="fieldset">
                                 <RadioGroup aria-label="private" name="private1" value={values.privateStatus} onChange={fieldChange('privateStatus')}>
                                     <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
                                     <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
                                 </RadioGroup>
-                                </FormControl>
-                            </div>
-                            <Divider />
-                            <h3>Workouts</h3>
-                            <WorkoutCards 
-                                createWorkoutItems={this.createWorkoutItems}
-                                workouts={workouts}
-                            />
+                            </FormControl>
                         </div>
+                        <Divider />
+                        <h3>Workouts</h3>
+                        <WorkoutCards
+                            createWorkoutItems={this.createWorkoutItems}
+                            workouts={workouts}
+                        />
                     </div>
-                </React.Fragment>
-            </MuiThemeProvider>
-        )
-    }
+                </div>
+            </React.Fragment>
+        </MuiThemeProvider>
+    )
+}
 }
 
 export default CreateScreen
