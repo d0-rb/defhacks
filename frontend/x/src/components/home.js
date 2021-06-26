@@ -15,7 +15,6 @@ const styles = {
 }
 
 export class Home extends Component {
-
     state = {
         step: 1,
         PrivateKeyCode: '',
@@ -41,9 +40,9 @@ export class Home extends Component {
         })
     }
 
-    changeWorkouts = input => (e, item) => {
-        var listNumber = e.target.name[e.target.name.length -1];
-        var dictSimple={"roomName": 0, "time": 1, "workoutType": 2, "gif": 3}
+    changeWorkouts = input => e => {
+        var listNumber = e.target.name[e.target.name.length - 1];
+        var dictSimple = { "workoutName": 0, "time": 1, "workoutType": 2, "gif": 3 }
         const { workouts } = this.state;
         var finalArray = workouts
         finalArray[listNumber][dictSimple[input]] = e.target.value
@@ -52,15 +51,25 @@ export class Home extends Component {
         this.setState(workoutsObject);
     }
 
+    getWorkouts = (listNumber, input) => {
+        var dictSimple = { "workoutName": 0, "time": 1, "workoutType": 2, "gif": 3 }
+        const { workouts } = this.state;
+        var finalArray = workouts
+        console.log(listNumber)
+        console.log(dictSimple[input])
+        console.log(finalArray[listNumber][dictSimple[input]])
+        return finalArray[listNumber][dictSimple[input]]
+    }
+
     render() {
-        const { step,PrivateKeyCode, Name,  workouts, time, workoutType } = this.state;
+        const { step, PrivateKeyCode, Name, workouts, time, workoutType } = this.state;
         const values = { PrivateKeyCode, Name };
-        const values2 = { Name,  workouts, time, workoutType};
-        
-        switch(step) {
-            case 1: 
+        const values2 = { Name, workouts, time, workoutType };
+
+        switch (step) {
+            case 1:
                 return (
-                    <InitialScreen 
+                    <InitialScreen
                         joinMeeting={this.joinMeeting}
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
@@ -75,15 +84,15 @@ export class Home extends Component {
                         values={values2}
                         time={time}
                         changeWorkouts={this.changeWorkouts}
+                        getWorkouts={this.getWorkouts}
                     />
                 )
             case 3:
                 return <VideoScreen
-                            submitPage={this.submitPage}
-                    />
+                    submitPage={this.submitPage}
+                />
             default:
-
-         }
+        }
     }
 }
 
