@@ -19,7 +19,7 @@ export class Home extends Component {
     state = {
         step: 1,
         PrivateKeyCode: '',
-        workouts: [{ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: "" }],
+        workouts: [{ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"}],
         Name: '',
         RoomName: '',
         WorkoutName: '',
@@ -49,7 +49,18 @@ export class Home extends Component {
         var listNumber = e.target.name.split(":")[1]
         const { workouts } = this.state;
         var finalArray = workouts
-        finalArray[listNumber][input] = e.target.value
+        if(input == "duration"){
+            const seconds = e.target.value.split(':').reduce((sum, current) => {
+                return {
+                    time: sum.time + current * Math.pow(60, sum.index),
+                    index: sum.index - 1,
+                }
+            }, { time: 0, index: 2 }).time;
+            finalArray[listNumber][input] = e.target.value;
+            finalArray[listNumber]['seconds'] = seconds;
+        }else {
+            finalArray[listNumber][input] = e.target.value
+        }
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject);
     }

@@ -63,7 +63,7 @@ export class CreateScreen extends Component {
     addNewItem = e => {
         const { values } = this.props;
         var finalArray = values.workouts
-        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""})
+        finalArray.push({ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"})
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject)
         console.log(values.workouts)
@@ -84,21 +84,28 @@ export class CreateScreen extends Component {
 
     uploadEverything = (e) => {
         //Create meeting first
-        const { values, workouts } = this.props;
-        const fd = new FormData();
+        const { values } = this.props;
         var timestamp = new Date().getUTCMilliseconds();
-        var secondPortion = Math.round(Math.random() * 10000);
+        var secondPortion = Math.round(Math.random() * 100000000);
         var id = timestamp + secondPortion;
         var timestamp1 = new Date().getUTCMilliseconds();
-        var secondPortion1 = Math.round(Math.random() * 10000);
+        var secondPortion1 = Math.round(Math.random() * 10000000);
         var id1 = timestamp1 + secondPortion1;
-        fd.append('id', id);
-        fd.append('workout_id', id1);
-        fd.append('name', values.RoomName)
-        fd.append('private', values.privatek)
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
+        const json = JSON.stringify({
+            Item: {
+                id,
+                workout_id: id1,
+                name: values.RoomName,
+                private: values.privatek
+            },
+            TableName: 'rooms'
+        });
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
         }).then(
             res => {
@@ -107,14 +114,13 @@ export class CreateScreen extends Component {
         )
 
         //Add workouts to meeting
-        const fd1 = new FormData();
-        fd1.append('id', id1);
-        fd1.append('name', values.WorkoutName);
-        fd1.append('workout', values.workouts);
-        fd1.append('TableName', 'workouts');
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd1, {
+        const json1 = JSON.stringify({Item: {'id': id1, 'name': values.WorkoutName, 'workout': values.workouts}, TableName: 'workouts'});
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
         }).then(
             res => {
@@ -143,7 +149,7 @@ export class CreateScreen extends Component {
                 res => {
                     var listNumber = e.target.name.split(":")[1]
                     var finalArray = values.workouts
-                    finalArray[listNumber]['gif'] = res.data.url
+                    finalArray[listNumber]['display'] = res.data.url
                     var workoutsObject = { workouts: finalArray }
                     this.setState(workoutsObject);
                 }
@@ -164,19 +170,19 @@ export class CreateScreen extends Component {
         for (var i = 0; i < values.workouts.length; i++) {
             let index = i;
             let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}></IconButton></label>
-            <Select name={"workoutType:" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
+            <Select name={"type:" + i} style={styles.textfield} onChange={changeWorkouts("type")} value={getWorkouts(index, "type")} variant="outlined">
                 <MenuItem value="exercise">Exercise</MenuItem>
                 <MenuItem value="break">Break</MenuItem>
             </Select>
-            <TextField label="Name of Workout" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
+            <TextField label="Name of Workout" name={"title:" + i} style={styles.textfield} value={getWorkouts(index, "title")} onChange={changeWorkouts("title")} variant="outlined" />
             <TimeField
-                    name={"time:" + i}
-                    value={getWorkouts(index, "time")}                     // {String}   required, format '00:00' or '00:00:00'
+                    name={"duration:" + i}
+                    value={getWorkouts(index, "duration")}                     // {String}   required, format '00:00' or '00:00:00'
                     colon=":"
-                    onChange={changeWorkouts("time")}
+                    onChange={changeWorkouts("duration")}
                     showSeconds
                     style={styles.textfield}
-                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" />}
+                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "duration")} variant="outlined" />}
                 />
                 <div className="fileUploadContainer">
                     <input type="file" name={"file:" + i} id={"file" + i} style={{display:"none"}} ref={this.myRef} onChange={this.fileUploadHandler} />
