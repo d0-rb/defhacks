@@ -92,7 +92,7 @@ export class InitialScreen extends Component {
                                 <div class="meetings-button join-private-meeting">
                                     <TextField id="pkc" label="Private Key" style={styles.textfield} onChange={fieldChange('PrivateKeyCode')} defaultValue={values.PrivateKeyCode} variant="outlined" />
                                     <TextField id="name" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
-                                    <Button variant="contained" color="secondary" disabled style={styles.button} onClick={this.join}>
+                                    <Button variant="contained" color="primary" style={styles.button} onClick={this.join}>
                                         Join Private Meeting
                                     </Button>
                                 </div>
