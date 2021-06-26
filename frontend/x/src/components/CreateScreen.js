@@ -41,6 +41,12 @@ const styles = {
 }
 
 export class CreateScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.myRef = React.createRef();
+        this.simulateClick = this.simulateClick.bind(this)
+    }
+
     join = e => {
         e.preventDefault();
         this.props.joinMeeting();
@@ -61,8 +67,48 @@ export class CreateScreen extends Component {
         console.log(values.workouts)
     }
 
+    uploadEverything = (e) => {
+        //Create meeting first
+        const { values, workouts } = this.props;
+        const fd = new FormData();
+        var timestamp = new Date().getUTCMilliseconds();
+        var secondPortion = Math.round(Math.random() * 10000);
+        var id = timestamp + secondPortion;
+        var timestamp1 = new Date().getUTCMilliseconds();
+        var secondPortion1 = Math.round(Math.random() * 10000);
+        var id1 = timestamp1 + secondPortion1;
+        fd.append('id', id);
+        fd.append('workout_id', id1);
+        fd.append('name', values.RoomName)
+        fd.append('private', values.privatek)
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+
+        //Add workouts to meeting
+        const fd1 = new FormData();
+        fd1.append('id', id1);
+        fd1.append('name', values.WorkoutName);
+        fd1.append('workout', values.workouts);
+        fd1.append('TableName', 'workouts');
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd1, {
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+    }
+
     fileUploadHandler = (e) => {
-        console.log(e)
         var data;
         var selectedFile = e.target.files[0];
         const fd = new FormData();
@@ -84,7 +130,10 @@ export class CreateScreen extends Component {
             )
         };
         reader.readAsDataURL(selectedFile);
-        console.log(fd)
+    }
+
+    simulateClick() {
+        this.myRef.current.click();
     }
 
     createWorkoutItems = () => {
@@ -95,7 +144,7 @@ export class CreateScreen extends Component {
         for (var i = 0; i < values.workouts.length; i++) {
             let workoutSection = <div className="workout-fill-in"><TextField label="Name of Workout" style={styles.textfield} onChange={changeWorkouts("roomName", i)} defaultValue={values.RoomName} variant="outlined" /><TimeField
                 value={time}                     // {String}   required, format '00:00' or '00:00:00'
-                onChange={(value) => { changeWorkouts("time", i) }}      // {Function} required
+                onChange={(value) => { changeWorkouts("time", i); }}      // {Function} required
                 colon=":"
                 showSeconds
                 style={styles.textfield}
@@ -109,8 +158,8 @@ export class CreateScreen extends Component {
                 </FormControl>
                 </div>
                 <div className="fileUploadContainer">
-                    <input type="file" name={"file" + i} id={"file" + i} onChange={this.fileUploadHandler} />
-                    <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button}>Select Photo For Interval</Button></label>
+                    <input type="file" name={"file" + i} id={"file" + i} style={{display:"none"}} ref={this.myRef} onChange={this.fileUploadHandler} />
+                    <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button} onClick={this.simulateClick}>Select Photo For Interval</Button></label>
                 </div>
             </div>
             formControl.push(workoutSection)
@@ -134,11 +183,12 @@ render() {
                         <p>Start Your Fitness Jouney Today</p>
                     </div>
                     <div className="form-container">
-                        <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('name')} defaultValue={values.Name} variant="outlined" />
-                        <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('roomName')} defaultValue={values.RoomName} variant="outlined" />
+                        <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
+                        <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
+                        <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
                         <div className="formContainer">
                             <FormControl component="fieldset">
-                                <RadioGroup aria-label="private" name="private1" value={values.privateStatus} onChange={fieldChange('privateStatus')}>
+                                <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
                                     <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
                                     <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
                                 </RadioGroup>

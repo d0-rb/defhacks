@@ -21,6 +21,9 @@ export class Home extends Component {
         PrivateKeyCode: '',
         workouts: [["", "00:00:00", "", ""]],
         Name: '',
+        RoomName: '',
+        WorkoutName: '',
+        privatek: '',
     }
 
     joinMeeting = () => {
@@ -39,6 +42,7 @@ export class Home extends Component {
         this.setState({
             [input]: e.target.value
         })
+        console.log(this.state);
     }
 
     changeWorkouts = input => (e, item) => {
@@ -53,9 +57,9 @@ export class Home extends Component {
     }
 
     render() {
-        const { step,PrivateKeyCode, Name,  workouts, time, workoutType } = this.state;
+        const { step,PrivateKeyCode, Name,  workouts, time, workoutType, RoomName, WorkoutName, privatek } = this.state;
         const values = { PrivateKeyCode, Name };
-        const values2 = { Name,  workouts, time, workoutType};
+        const values2 = { Name,  workouts, time, workoutType, RoomName, WorkoutName, privatek};
         
         switch(step) {
             case 1: 
