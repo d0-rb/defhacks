@@ -15,7 +15,8 @@ import WorkoutCards from "./workoutCards";
 import TimeField from 'react-simple-timefield';
 import { MenuItem, Select } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
-
+import CloseIcon from '@material-ui/icons/Close';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 const theme = createMuiTheme({
     palette: {
@@ -34,6 +35,14 @@ const theme = createMuiTheme({
 const styles = {
     button: {
         margin: 15,
+    },
+    transformless: {
+        margin: 10,
+        height: '58px',
+        textTransform: 'none',
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle"
     },
     textfield: {
         margin: 10,
@@ -63,7 +72,7 @@ export class CreateScreen extends Component {
     addNewItem = e => {
         const { values } = this.props;
         var finalArray = values.workouts
-        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""})
+        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: "" })
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject)
         console.log(values.workouts)
@@ -81,7 +90,6 @@ export class CreateScreen extends Component {
         console.log(values.workouts)
     }
 
-
     uploadEverything = (e) => {
         //Create meeting first
         const { values, workouts } = this.props;
@@ -98,7 +106,7 @@ export class CreateScreen extends Component {
         fd.append('private', values.privatek)
         axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
             onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
         }).then(
             res => {
@@ -114,7 +122,7 @@ export class CreateScreen extends Component {
         fd1.append('TableName', 'workouts');
         axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd1, {
             onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
         }).then(
             res => {
@@ -131,13 +139,13 @@ export class CreateScreen extends Component {
         reader.onload = function (event) {
             // The file's text will be printed here
             data = event.target.result;
-            const json = JSON.stringify({'name': e.target.files[0].name, 'data': data});
+            const json = JSON.stringify({ 'name': e.target.files[0].name, 'data': data });
             axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/images', json, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 onUploadProgress: progressEvent => {
-                    console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                    console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
                 }
             }).then(
                 res => {
@@ -163,13 +171,18 @@ export class CreateScreen extends Component {
 
         for (var i = 0; i < values.workouts.length; i++) {
             let index = i;
-            let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}></IconButton></label>
-            <Select name={"workoutType:" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
-                <MenuItem value="exercise">Exercise</MenuItem>
-                <MenuItem value="break">Break</MenuItem>
-            </Select>
-            <TextField label="Name of Workout" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
-            <TimeField
+            let workoutSection = <div className="workout-fill-in">
+                <label>
+                    <IconButton color="primary" icon="close" size="large" name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}>
+                        <CloseIcon />
+                    </IconButton>
+                </label>
+                <Select name={"workoutType:" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
+                    <MenuItem value="exercise">Exercise</MenuItem>
+                    <MenuItem value="break">Break</MenuItem>
+                </Select>
+                <TextField label="Name of Interval" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
+                <TimeField
                     name={"time:" + i}
                     value={getWorkouts(index, "time")}                     // {String}   required, format '00:00' or '00:00:00'
                     colon=":"
@@ -178,10 +191,12 @@ export class CreateScreen extends Component {
                     style={styles.textfield}
                     input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" />}
                 />
-                <div className="fileUploadContainer">
-                    <input type="file" name={"file:" + i} id={"file" + i} style={{display:"none"}} ref={this.myRef} onChange={this.fileUploadHandler} />
-                    <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button} onClick={this.simulateClick}>Select Photo For Interval</Button></label>
-                </div>
+
+                <input type="file" name={"file:" + i} id={"file" + i} style={{ display: "none" }} ref={this.myRef} onChange={this.fileUploadHandler} />
+                <label htmlFor={"file" + i}>
+                    <Button variant="outlined" size="large" color="primary" style={styles.transformless} onClick={this.simulateClick} startIcon={<CloudUploadIcon />}>Exercise Photo</Button>
+                </label>
+
             </div>
             formControl.push(workoutSection)
         }
@@ -192,41 +207,41 @@ export class CreateScreen extends Component {
         return formControl
     }
 
-render() {
-    const { values, fieldChange, workouts } = this.props;
+    render() {
+        const { values, fieldChange, workouts } = this.props;
 
-    return (
-        <MuiThemeProvider theme={theme}>
-            <React.Fragment>
-                <div className="wrapper">
-                    <div className="top-container">
-                        <h1>Create Your Exercise Routine</h1>
-                        <p>Start Your Fitness Jouney Today</p>
-                    </div>
-                    <div className="form-container">
-                        <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
-                        <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
-                        <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
-                        <div className="formContainer">
-                            <FormControl component="fieldset">
-                                <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
-                                    <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
-                                    <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
-                                </RadioGroup>
-                            </FormControl>
+        return (
+            <MuiThemeProvider theme={theme}>
+                <React.Fragment>
+                    <div className="wrapper">
+                        <div className="top-container">
+                            <h1>Create Your Exercise Routine</h1>
+                            <p>Start Your Fitness Jouney Today</p>
                         </div>
-                        <Divider />
-                        <h3>Workouts</h3>
-                        <WorkoutCards
-                            createWorkoutItems={this.createWorkoutItems}
-                            workouts={workouts}
-                        />
+                        <div className="form-container">
+                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
+                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
+                            <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
+                            <div className="formContainer">
+                                <FormControl component="fieldset">
+                                    <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
+                                        <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
+                                        <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </div>
+                            <Divider />
+                            <h3>Intervals</h3>
+                            <WorkoutCards
+                                createWorkoutItems={this.createWorkoutItems}
+                                workouts={workouts}
+                            />
+                        </div>
                     </div>
-                </div>
-            </React.Fragment>
-        </MuiThemeProvider>
-    )
-}
+                </React.Fragment>
+            </MuiThemeProvider>
+        )
+    }
 }
 
 export default CreateScreen
