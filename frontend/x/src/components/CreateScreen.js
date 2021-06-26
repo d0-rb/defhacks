@@ -55,10 +55,9 @@ export class CreateScreen extends Component {
     addNewItem = e => {
         const { values } = this.props;
         var finalArray = values.workouts
-        finalArray.push(["", "00:00:00", "", ""])
+        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""})
         var workoutsObject = { workouts: finalArray }
-
-        this.setState(workoutsObject);
+        this.setState(workoutsObject)
         console.log(values.workouts)
     }
 
@@ -72,24 +71,6 @@ export class CreateScreen extends Component {
 
         this.setState(workoutsObject);
         console.log(values.workouts)
-    }
-
-    getWorkoutState = (index, input) => {
-        var listNumber = index;
-        var dictSimple = { "workoutName": 0, "time": 1, "workoutType": 2, "gif": 3 }
-        const { values } = this.props;
-        var finalArray = values.workouts
-        console.log(listNumber)
-        console.log(dictSimple[input])
-        console.log(finalArray[listNumber][dictSimple[input]])
-        return finalArray[listNumber][dictSimple[input]]
-    }
-
-    lockWorkoutName = (e) => {
-        const { values } = this.props;
-        var finalArray = values.workouts
-        console.log(finalArray[0][0])
-        return finalArray[0][0]
     }
 
     fileUploadHandler = (e) => {
@@ -125,13 +106,13 @@ export class CreateScreen extends Component {
             let index = i;
             let workoutSection = <div className="workout-fill-in">
                 <label><Button variant="contained" color="secondary" name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}>Remove</Button></label>
-                <Select name={"workoutType" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
+                <Select name={"workoutType:" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
                     <MenuItem value="exercise">Exercise</MenuItem>
                     <MenuItem value="break">Break</MenuItem>
                 </Select>
-                <TextField label="Name of Workout" name={"workoutName" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
+                <TextField label="Name of Workout" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
                 <TimeField
-                    name={"time" + i}
+                    name={"time:" + i}
                     value={getWorkouts(index, "time")}                     // {String}   required, format '00:00' or '00:00:00'
                     // {Function} required
                     colon=":"
@@ -141,7 +122,7 @@ export class CreateScreen extends Component {
                     input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" />}
                 />
                 <div className="fileUploadContainer">
-                    <input type="file" name={"file" + i} id={"file" + i} onChange={this.fileUploadHandler} />
+                    <input type="file" name={"file:" + i} id={"file" + i} onChange={this.fileUploadHandler} />
                     <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button}>Select Photo For Interval</Button></label>
                 </div>
             </div>

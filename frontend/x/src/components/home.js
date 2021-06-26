@@ -18,7 +18,7 @@ export class Home extends Component {
     state = {
         step: 1,
         PrivateKeyCode: '',
-        workouts: [["", "00:00:00", "", ""]],
+        workouts: [{ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: "" }],
         Name: '',
     }
 
@@ -41,24 +41,18 @@ export class Home extends Component {
     }
 
     changeWorkouts = input => e => {
-        var listNumber = e.target.name[e.target.name.length - 1];
-        var dictSimple = { "workoutName": 0, "time": 1, "workoutType": 2, "gif": 3 }
+        var listNumber = e.target.name.split(":")[1]
         const { workouts } = this.state;
         var finalArray = workouts
-        finalArray[listNumber][dictSimple[input]] = e.target.value
+        finalArray[listNumber][input] = e.target.value
         var workoutsObject = { workouts: finalArray }
-
         this.setState(workoutsObject);
     }
 
     getWorkouts = (listNumber, input) => {
-        var dictSimple = { "workoutName": 0, "time": 1, "workoutType": 2, "gif": 3 }
         const { workouts } = this.state;
         var finalArray = workouts
-        console.log(listNumber)
-        console.log(dictSimple[input])
-        console.log(finalArray[listNumber][dictSimple[input]])
-        return finalArray[listNumber][dictSimple[input]]
+        return finalArray[listNumber][input]
     }
 
     render() {
