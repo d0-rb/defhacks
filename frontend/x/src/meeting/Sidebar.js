@@ -29,9 +29,13 @@ class Sidebar extends React.Component {
     })
   }
 
+  copyId = () => {
+    navigator.clipboard.writeText(this.props.roomId);
+  }
+
   render() {
     const { open } = this.state;
-    const { workout, section: sectionIndex, onLeave } = this.props;
+    const { roomId, workout, section: sectionIndex, onLeave } = this.props;
 
     let listItems = [];
     let currentIndex = 0;
@@ -72,6 +76,9 @@ class Sidebar extends React.Component {
                   {listItems}
                 </List>
               </div>
+              <Button color="primary" fullWidth size="large" onClick={this.copyId}>
+                {roomId}
+              </Button>
               <Button variant="contained" color="primary" fullWidth size="large" onClick={onLeave}>
                 Leave
               </Button>
