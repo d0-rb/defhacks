@@ -8,7 +8,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import green from '@material-ui/core/colors/green';
-
+import axios from 'axios';
 
 const theme = createMuiTheme({
     palette: {
@@ -28,6 +28,11 @@ const styles = {
     button: {
         margin: 15,
     },
+    error: {
+        fontSize: '20px',
+        color: 'red',
+        margin: 0,
+    },
     textField: {
         margin: 10,
         color: 'white',
@@ -36,6 +41,10 @@ const styles = {
 }
 
 export class InitialScreen extends Component {
+    state = {
+        error: false,
+    }
+
     join = e => {
         e.preventDefault();
         this.props.joinMeeting();
@@ -44,6 +53,29 @@ export class InitialScreen extends Component {
     create = e => {
         e.preventDefault();
         this.props.createMeeting();
+    }
+
+    checkRoom = e => {
+        const { PrivateKeyCode } = this.props.values;
+        console.log(PrivateKeyCode)
+        axios.get(`https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms`).then(res => {
+            let valid = false;
+            let rooms = res.data.Items;
+            for (let index in rooms) {
+                let room = rooms[index];
+                console.log(room.id);
+                if (room.id === PrivateKeyCode) {
+                    valid = true;
+                }
+            }
+
+            if (valid) {
+                this.setState({ error: false });
+                //join meeting
+            } else {
+                this.setState({ error: true });
+            }
+        })
     }
 
     render() {
@@ -92,9 +124,10 @@ export class InitialScreen extends Component {
                                 <div className="meetings-button join-private-meeting">
                                     <TextField id="pkc" label="Private Key" style={styles.textfield} onChange={fieldChange('PrivateKeyCode')} defaultValue={values.PrivateKeyCode} variant="outlined" />
                                     <TextField id="name" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
-                                    <Button variant="contained" color="primary" style={styles.button} onClick={this.join}>
+                                    <Button variant="contained" color="primary" style={styles.button} onClick={this.checkRoom}>
                                         Join Private Meeting
                                     </Button>
+                                    {this.state.error && <label style={styles.error}>Invalid Private Key</label>}
                                 </div>
                             </div>
                         </div>
