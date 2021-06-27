@@ -54,7 +54,6 @@ export class InitialScreen extends Component {
                     <div className="groups">
                         <div className="group public-meetings">
                             <List component="nav" className="main-list" aria-label="secondary">
-                                <ListItem button>
                                 <BuildPublicList
                                     rooms={rooms}
                                 />

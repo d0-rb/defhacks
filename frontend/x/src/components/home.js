@@ -32,10 +32,8 @@ export class Home extends Component {
         axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms')
             .then((response) => {
                 // handle success
-                console.log(response);
                 var rooms = [];
                 response.data.Items.forEach(element => {
-                    console.log(element)
                     if(element.private == "public") {
                         rooms.push(
                             element

@@ -49,6 +49,14 @@ const styles = {
         color: 'white',
         borderColor: "white",
         verticalAlign: "middle"
+    },
+    avengers: {
+        margin: 10,
+        marginTop: 20,
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle",
+        float: "right"
     }
 }
 
@@ -73,7 +81,7 @@ export class CreateScreen extends Component {
     addNewItem = e => {
         const { values } = this.props;
         var finalArray = values.workouts
-        finalArray.push({ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"})
+        finalArray.push({ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise" })
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject)
         console.log(values.workouts)
@@ -123,7 +131,7 @@ export class CreateScreen extends Component {
         )
 
         //Add workouts to meeting
-        const json1 = JSON.stringify({Item: {'id': id1, 'name': values.WorkoutName, 'workout': values.workouts}, TableName: 'workouts'});
+        const json1 = JSON.stringify({ Item: { 'id': id1, 'name': values.WorkoutName, 'workout': values.workouts }, TableName: 'workouts' });
         axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
             headers: {
                 'Content-Type': 'application/json'
@@ -175,8 +183,33 @@ export class CreateScreen extends Component {
         this.myRefs[id].current.click();
     }
 
-    populateFields = () => {
-        
+    populateFields = e => {
+        // captain - https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=6261898
+        let dictFields = {"ca": '6261898', "bw": "2200164", "im": "194135", "cm": "7488586", "bp": "5495241"}
+        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id='+dictFields[e.target.value])
+                .then((response) => {
+                    // handle success
+                    console.log(response);
+                    let workouts = [];
+                    response.data.Item.workout.forEach(element => {
+                        console.log(element)
+                        workouts.push(
+                            element
+                        )
+                    })
+                    this.props.values.workouts = workouts
+                }).catch((err) => {
+                    let workouts = [];
+                    err.response.data.Item.workout.forEach(element => {
+                        console.log(element)
+                        workouts.push(
+                            element
+                        )
+                    });
+                    console.log(workouts);
+                    this.props.values.workouts = workouts
+                    console.log(this.props.values.workouts);
+                });
     }
 
     createWorkoutItems = () => {
@@ -188,12 +221,12 @@ export class CreateScreen extends Component {
             let index = i;
             this.myRefs[i] = React.createRef();
             let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}><CloseIcon /></IconButton></label>
-            <Select name={"type:" + i} style={styles.textfield} onChange={changeWorkouts("type")} value={getWorkouts(index, "type")} variant="outlined">
-                <MenuItem value="exercise">Exercise</MenuItem>
-                <MenuItem value="break">Break</MenuItem>
-            </Select>
-            <TextField label="Name of Workout" name={"title:" + i} style={styles.textfield} value={getWorkouts(index, "title")} onChange={changeWorkouts("title")} variant="outlined" />
-            <TimeField
+                <Select name={"type:" + i} style={styles.textfield} onChange={changeWorkouts("type")} value={getWorkouts(index, "type")} variant="outlined">
+                    <MenuItem value="exercise">Exercise</MenuItem>
+                    <MenuItem value="break">Break</MenuItem>
+                </Select>
+                <TextField label="Name of Workout" name={"title:" + i} style={styles.textfield} value={getWorkouts(index, "title")} onChange={changeWorkouts("title")} variant="outlined" />
+                <TimeField
                     name={"duration:" + i}
                     value={getWorkouts(index, "duration")}                     // {String}   required, format '00:00' or '00:00:00'                 // {String}   required, format '00:00' or '00:00:00'
                     colon=":"
@@ -243,7 +276,9 @@ export class CreateScreen extends Component {
                             </div>
                             <Divider />
                             <h3>Intervals</h3>
-                            <Select name={"avengers"} style={styles.textfield}  variant="outlined" onChange={this.populateFields()}>
+
+                            <Select name={"avengers"} style={styles.avengers} defaultValue="cu" variant="outlined" onChange={this.populateFields}>
+                                <MenuItem value="cu">Custom</MenuItem>
                                 <MenuItem value="ca">Captain America</MenuItem>
                                 <MenuItem value="bw">Black Widow</MenuItem>
                                 <MenuItem value="im">Iron Man</MenuItem>

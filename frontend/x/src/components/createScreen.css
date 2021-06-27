@@ -60,6 +60,8 @@ div.wrapper .MuiDivider-root {
 
 div.wrapper h3 {
     padding-left: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
 }
 
 .workout-fill-in {
