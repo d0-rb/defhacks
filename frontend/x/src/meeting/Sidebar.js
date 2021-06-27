@@ -72,7 +72,7 @@ class Sidebar extends React.Component {
                   {listItems}
                 </List>
               </div>
-              <Button variant="contained" color="primary" fullWidth size="large">
+              <Button variant="contained" color="primary" fullWidth size="large" onClick={onLeave}>
                 Leave
               </Button>
             </div>

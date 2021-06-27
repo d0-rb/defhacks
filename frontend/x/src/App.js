@@ -42,6 +42,10 @@ class App extends React.Component {
     };
   }
 
+  leave = () => {
+    console.log('leave!!');
+  }
+
   render() {
     const { roomName, displayName, password, workout, startTime } = this.state;
     
@@ -54,6 +58,7 @@ class App extends React.Component {
             password={password}
             workout={workout}
             startTime={startTime}
+            onLeave={this.leave}
           />
         </ThemeProvider>
       </div>

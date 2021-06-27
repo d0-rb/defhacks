@@ -1,0 +1,8 @@
+#react-jitsi-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#react-jitsi-frame {
+    display: block !important;
+}
