@@ -1,0 +1,95 @@
+div.wrapper h1 {
+    margin-bottom: 0px;
+}
+
+.wrapper {
+    text-align: center;
+}
+
+.top-container {
+    display: inline-block;
+    width: 75%;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.form-container {
+    width: 75%;
+    text-align: left;
+    display: inline-block;
+}
+
+#rn-label {
+    color: white;
+}
+
+#name2-label {
+    color: white;
+}
+
+div.wrapper .MuiDivider-root {
+    background: #ddd !important;
+    margin-top: 20px !important;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #4caf50 !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+    border-color: white !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(47, 223, 41, 0.842) !important;
+}
+
+.MuiFormLabel-root {
+    color: white !important;
+}
+
+    .MuiFormLabel-root.Mui-focused {
+        color: #4caf50 !important;
+    }
+
+.formContainer {
+    padding: 5px 15px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+div.wrapper h3 {
+    padding-left: 10px;
+}
+
+.workout-fill-in {
+    padding: 5px 10px;
+}
+
+.react-datetime-picker__inputGroup__input {
+    color: white;
+}
+
+.MuiInputBase-input {
+    color: white !important;
+}
+
+.react-datetime-picker__button__icon {
+    border-width: 0px;
+    stroke: white !important;
+}
+.react-datetime-picker__wrapper {
+    border-color: white !important;
+    border:normal !important;
+    border-radius: 4px !important;
+    height: 56px !important;
+    vertical-align:middle !important;
+    align-items:center !important;
+}
+
+.react-datetime-picker {
+    vertical-align: middle !important;
+    font-size: 20px !important;
+    text-align: center !important;
+    margin-left: 10px;
+}
