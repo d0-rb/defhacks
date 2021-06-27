@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, StylesProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -82,14 +82,14 @@ export class InitialScreen extends Component {
                                 <Divider />
                             </List>
                         </div>
-                        <div class="group">
-                            <div class="create-join">
-                                <div class="meetings-button create-meeting">
+                        <div className="group">
+                            <div className="create-join">
+                                <div className="meetings-button create-meeting">
                                     <Button variant="contained" color="secondary" style={styles.button} onClick={this.create}>
                                         Create Meeting
                                     </Button>
                                 </div>
-                                <div class="meetings-button join-private-meeting">
+                                <div className="meetings-button join-private-meeting">
                                     <TextField id="pkc" label="Private Key" style={styles.textfield} onChange={fieldChange('PrivateKeyCode')} defaultValue={values.PrivateKeyCode} variant="outlined" />
                                     <TextField id="name" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
                                     <Button variant="contained" color="primary" style={styles.button} onClick={this.join}>
