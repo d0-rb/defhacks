@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import CreateScreen from "./CreateScreen";
 import InitialScreen from "./InitialScreen";
-import VideoScreen from "./VideoScreen";
 import axios from "axios";
 
 const styles = {
@@ -19,12 +18,19 @@ export class Home extends Component {
     state = {
         step: 1,
         workouts: [{ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"}],
+        privatek: '',
+        rooms: [],
+    }
+
+    /*state = {
+        step: 1,
+        workouts: [{ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"}],
         Name: '',
         RoomName: '',
         WorkoutName: '',
         privatek: '',
         rooms: [],
-    }
+    }*/
 
     constructor(props) {
         super();
@@ -47,12 +53,6 @@ export class Home extends Component {
             });
     }
 
-    joinMeeting = () => {
-        this.setState({
-            step: 3
-        });
-    }
-
     createMeeting = () => {
         this.setState({
             step: 2
@@ -64,6 +64,14 @@ export class Home extends Component {
             [input]: e.target.value
         })
         console.log(this.state);
+    }
+
+    fieldChangeMaster = input => e => {
+        const { setAppState } = this.props;
+
+        setAppState({
+            [input]: e.target.value
+        });
     }
 
     changeWorkouts = input => e => {
@@ -94,17 +102,18 @@ export class Home extends Component {
     }
 
     render() {
-        const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek, rooms } = this.state;
+        const { step, PrivateKeyCode, workouts, workoutType, WorkoutName, privatek, rooms } = this.state;
+        const { roomName: RoomName, displayName: Name } = this.props;
         const values = { PrivateKeyCode, Name, rooms };
-        const values2 = { Name, workouts, time, workoutType, RoomName, WorkoutName, privatek };
+        const values2 = { Name, workouts, workoutType, RoomName, WorkoutName, privatek };
 
         switch (step) {
             case 1:
                 return (
                     <InitialScreen
-                        joinMeeting={this.joinMeeting}
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
+                        fieldChangeMaster={this.fieldChangeMaster}
                         values={values}
                         rooms={rooms}
                     />
@@ -113,17 +122,13 @@ export class Home extends Component {
                 return (
                     <CreateScreen
                         fieldChange={this.fieldChange}
+                        fieldChangeMaster={this.fieldChangeMaster}
                         workouts={this.workouts}
                         values={values2}
-                        time={time}
                         changeWorkouts={this.changeWorkouts}
                         getWorkouts={this.getWorkouts}
                     />
                 )
-            case 3:
-                return <VideoScreen
-                    submitPage={this.submitPage}
-                />
             default:
         }
     }

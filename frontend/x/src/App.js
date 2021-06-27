@@ -23,36 +23,48 @@ class App extends React.Component {
 
     this.state = {
       page: 'main',
-      roomName: '24',
-      displayName: 'bruh',
-      password: 'abc',
-      workout: [
-        {
-          title: 'push-ups',
-          display: 'https://media1.tenor.com/images/c11426c31706abc656c031d7b075af5f/tenor.gif?itemid=15823888',
-          seconds: 5,
-          type: 'exercise',
-        },
-        {
-          title: 'rest',
-          display: 'https://media1.tenor.com/images/9cf8d7db2b421a8e2fed7d19882640ce/tenor.gif?itemid=17105030',
-          seconds: 10,
-          type: 'break',
-        },
-      ],
-      startTime: currentTime.getTime() + 10000,
+      roomName: '',
+      displayName: '',
+      password: '',
+      workout: [],
+      startTime: currentTime.getTime(),
+      roomId: 0,
     };
   }
+  
+  setMasterState = (state) => {
+    this.setState(state);
+  }
 
-  leave = () => {
-    console.log('leave!!');
+  setPage = (page) => {
+    this.setState({
+      page,
+    })
   }
 
   render() {
-    const { roomName, displayName, password, workout, startTime } = this.state;
-    
-    return (
-      <div className="App full-size">
+    const { roomName, displayName, password, workout, startTime, roomId } = this.state;
+
+    let { page } = this.state;
+
+    switch (page) {
+      case 'main':
+        page = (
+          <header className="App-header">
+            <Home
+              roomName={roomName}
+              displayName={displayName}
+              password={password}
+              startTime={startTime}
+              roomId={roomId}
+              setAppState={this.setMasterState}
+              onJoin={() => this.setPage('meeting')}
+            />
+          </header>
+        )
+        break;
+      case 'meeting':
+        page = (
         <ThemeProvider theme={theme}>
           <Meeting
             roomName={roomName}
@@ -60,9 +72,17 @@ class App extends React.Component {
             password={password}
             workout={workout}
             startTime={startTime}
-            onLeave={this.leave}
+            roomId={roomId}
+            onLeave={() => this.setPage('main')}
           />
         </ThemeProvider>
+        );
+        break;
+    }
+    
+    return (
+      <div className="App full-size">
+        {page}
       </div>
     );
   }

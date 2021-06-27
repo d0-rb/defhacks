@@ -265,7 +265,7 @@ export class CreateScreen extends Component {
     }
 
     render() {
-        const { values, fieldChange, workouts } = this.props;
+        const { values, fieldChange, fieldChangeMaster, workouts } = this.props;
 
         return (
             <MuiThemeProvider theme={theme}>
@@ -276,8 +276,8 @@ export class CreateScreen extends Component {
                             <p>Start Your Fitness Jouney Today</p>
                         </div>
                         <div className="form-container">
-                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
-                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
+                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChangeMaster('displayName')} defaultValue={values.Name} variant="outlined" />
+                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChangeMaster('roomName')} defaultValue={values.RoomName} variant="outlined" />
                             <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
                             <DateTimePicker value={new Date()} onChange={this.parseTime} style={styles.datepicker} disableClock='true' amPmAriaLabel='test' />
                             <div className="formContainer">

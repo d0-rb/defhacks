@@ -171,7 +171,6 @@ class Meeting extends React.Component {
             <Jitsi
               roomName={roomName}
               displayName={displayName}
-              password={password}
               frameStyle={{ display: 'block', width: '100%', height: '100%' }}
               containerStyle={{ width:'800px', height: '400px' }}
               onAPILoad={this.handleAPI}
