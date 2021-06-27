@@ -1,4 +1,5 @@
 import './Meeting.css';
+import './Jitsi.css';
 import '../styles.css';
 import React from 'react';
 import Jitsi from 'react-jitsi'
@@ -11,8 +12,6 @@ import Sidebar from './Sidebar';
 class Meeting extends React.Component {
   constructor(props) {
     super();
-
-    const { startTime } = props;
 
     this.state = {
       time: -1,
@@ -54,9 +53,15 @@ class Meeting extends React.Component {
       this.setState({
         time: (currentTime.getTime() - startTime)/1000,
       });
-    } else if (section >= workout.length) { // if we're in the last section (workout is over)
+    } else if (section >= workout.length) { // if workout is over
       this.setState({
         time: (currentTime.getTime() - startTime)/1000,
+      });
+      
+      this.isAudioMuted().then(muted => {
+        if (muted) {
+          this.toggleAudio();
+        }
       });
     } else if (time > sectionEnd) { // if its time to transition to the next section
       section += 1;
@@ -65,18 +70,70 @@ class Meeting extends React.Component {
         section,
         ...this.getSectionTimes(workout, section)
       });
+
+      this.isAudioMuted().then(muted => { // sets muted status accordingly
+        if (muted !== null) {
+          if (section < workout.length) {
+            if (muted == (workout[section].type == 'break')) {
+              this.toggleAudio();
+            }
+          } else {
+            if (muted) {
+              this.toggleAudio();
+            }
+          }
+        }
+      });
     } else {
       this.setState({
         time: (currentTime.getTime() - startTime)/1000,
       });
     }
-    console.log(this.state)
 
     window.requestAnimationFrame(this.update);
   };
 
+  isAudioMuted = () => {
+    console.log('wait for the api to load! is audio muted');
+    return Promise.resolve(null);
+  }
+
+  toggleAudio = () => {
+    console.log('wait for the api to load! mute audio');
+    return null;
+  }
+
+  isVideoMuted = () => {
+    console.log('wait for the api to load! is video muted');
+    return Promise.resolve(null);
+  }
+
+  toggleVideo = () => {
+    console.log('wait for the api to load! mute video');
+    return null;
+  }
+
+  handleAPI = (JitsiMeetAPI) => {
+    JitsiMeetAPI.isAudioMuted().then(muted => {
+      if (!muted) { // if the person is not muted
+        JitsiMeetAPI.executeCommand('toggleAudio') // mute them
+      }
+    });
+
+    JitsiMeetAPI.isVideoMuted().then(muted => {
+      if (muted) { // if the person has no video
+        JitsiMeetAPI.executeCommand('toggleVideo') // turn it on
+      }
+    });
+
+    this.isAudioMuted = () => JitsiMeetAPI.isAudioMuted()
+    this.toggleAudio = () => JitsiMeetAPI.executeCommand('toggleAudio')
+    this.isVideoMuted = () => JitsiMeetAPI.isVideoMuted()
+    this.toggleVideo = () => JitsiMeetAPI.executeCommand('toggleVideo')
+  }
+
   render() {
-    const { roomName, displayName, password, workout } = this.props;
+    const { roomName, displayName, password, workout, onLeave } = this.props;
     const { time, section, sectionStart, sectionEnd } = this.state;
 
     let currentGif = 'https://sectionpictures.s3.amazonaws.com/pending.png';
@@ -111,7 +168,15 @@ class Meeting extends React.Component {
             <Timeline workout={workout} time={time} length={workout.reduce((length, section) => length + section.seconds, 0)} />
           </div>
           <div className="flex-fill" id="jitsi-frame">
-            <Jitsi roomName={roomName} displayName={displayName} password={password} />
+            <Jitsi
+              roomName={roomName}
+              displayName={displayName}
+              password={password}
+              frameStyle={{ display: 'block', width: '100%', height: '100%' }}
+              containerStyle={{ width:'800px', height: '400px' }}
+              onAPILoad={this.handleAPI}
+              loadingComponent={'bruh'}
+            />
           </div>
           <div className="flex mid-background" id="bottom-bar">
             <Display gif={currentGif} />
@@ -119,7 +184,7 @@ class Meeting extends React.Component {
             <Preview title={nextUp} />
           </div>
         </div>
-        <Sidebar workout={workout} section={section} onLeave={() => console.log('hi!')} />
+        <Sidebar workout={workout} section={section} onLeave={onLeave} />
       </div>
     );
   }
