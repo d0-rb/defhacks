@@ -18,8 +18,8 @@ const styles = {
   },
   rightAlign: {
     position: 'absolute',
-    bottom: '20%',
-    left: '3px',
+    bottom: '1px',
+    left: '1px',
   }
 };
 
@@ -60,7 +60,7 @@ class Timeline extends Component {
       }
 
       markers.push(
-        <div className="checkpoint-container" style={{width: 100 * section.duration/length + 'vw'}}>
+        <div className="checkpoint-container" style={{width: 100 * section.seconds/length + 'vw'}}>
           {icon}
           <div className="checkpoint white-background" />
         </div>

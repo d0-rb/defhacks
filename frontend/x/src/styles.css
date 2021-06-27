@@ -12,7 +12,7 @@
 }
 
 .dark-background {
-    background-color: #212121;
+    background-color: #282c34;
 }
 
 .mid-background {
@@ -20,11 +20,29 @@
 }
 
 .light-background {
-    background-color: #4d4d4d;
+    background-color: #282c34;
+}
+
+.neon-background {
+    background-color: #4caf50;
 }
 
 .white-background {
-    background-color: #e6ffe6;
+    background-color: #f1f8e9;
+}
+
+.neon-color {
+    color: #64dd17;
+}
+
+.white-color {
+    color: #f5f5f5;
+}
+
+.overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }
 
 .vert-flex {
@@ -38,6 +56,14 @@
     display: flex;
     justify-content: center;
     align-content: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.vert {
+    flex-direction: column;
 }
 
 .flex-fill {

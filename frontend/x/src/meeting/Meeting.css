@@ -4,15 +4,15 @@
 }
 
 .hide-top.open {
-    height: 10vh;
+    height: 7vh;
 }
 
 .checkpoint {
     position: absolute;
     bottom: 0px;
-    left: 0px;
+    left: -2px;
     width: 2px;
-    height: 80%;
+    height: 50%;
 }
 
 .checkpoint-container {
@@ -25,7 +25,7 @@
 
 #bottom-bar {
     width: 100%;
-    min-height: 100px;
+    min-height: 150px;
     height: 22%;
 }
 

@@ -5,10 +5,10 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#64dd17',
+      main: '#4caf50',
     },
     secondary: {
-      main: '#64dd17',
+      main: '#4caf50',
     },
   },
 });
@@ -16,6 +16,8 @@ const theme = createMuiTheme({
 class App extends React.Component {
   constructor(props) {
     super();
+
+    const currentTime = new Date();
 
     this.state = {
       page: 'main',
@@ -25,22 +27,23 @@ class App extends React.Component {
       workout: [
         {
           title: 'push-ups',
-          display: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif',
-          duration: 30,
+          display: 'https://media1.tenor.com/images/c11426c31706abc656c031d7b075af5f/tenor.gif?itemid=15823888',
+          seconds: 5,
           type: 'exercise',
         },
         {
           title: 'rest',
-          display: 'https://upload.wikimedia.org/wikipedia/commons/2/2c/Rotating_earth_%28large%29.gif',
-          duration: 10,
+          display: 'https://media1.tenor.com/images/9cf8d7db2b421a8e2fed7d19882640ce/tenor.gif?itemid=17105030',
+          seconds: 10,
           type: 'break',
-        }
+        },
       ],
+      startTime: currentTime.getTime() + 10000,
     };
   }
 
   render() {
-    const { roomName, displayName, password, workout } = this.state;
+    const { roomName, displayName, password, workout, startTime } = this.state;
     
     return (
       <div className="App full-size">
@@ -50,6 +53,7 @@ class App extends React.Component {
             displayName={displayName}
             password={password}
             workout={workout}
+            startTime={startTime}
           />
         </ThemeProvider>
       </div>

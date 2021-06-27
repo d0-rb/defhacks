@@ -1,9 +1,8 @@
 import '../styles.css';
 
-function Display() {
+function Display(props) {
   return (
-    <>
-    </>
+    <img src={props.gif} />
   );
 }
 
