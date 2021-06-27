@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import axios from 'axios';
 
 const useStyles = makeStyles({
     root: {
@@ -30,12 +31,26 @@ const useStyles = makeStyles({
 
 export default function BuildPublicList(props) {
     const classes = useStyles();
-    const { rooms } = props;
+    const { rooms, setAppState } = props;
 
     let items = [];
 
+    const goToRoom = (room) => () => {
+        axios.get(`https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=` + room.workout_id).catch(err => {
+            const workout = err.response.data.Item;
+
+            setAppState({
+                page: 'meeting',
+                roomName: room.name,
+                workout: workout.workout,
+                startTime: room.startTime,
+                roomId: room.id,
+            })
+        })
+    }
+
     if (rooms.length === 0) {
-        items.push(<div class = "cant-load">
+        items.push(<div className="cant-load">
             <ListItem button>
                 <ListItemText primary="Sorry! Can't Find Any :(" />
             </ListItem>
@@ -43,8 +58,8 @@ export default function BuildPublicList(props) {
         </div>)
     } else {
         rooms.forEach((room) => {
-            items.push(<div class = "loaded-item">
-                <ListItem button>
+            items.push(<div className="loaded-item">
+                <ListItem button onClick={goToRoom(room)}>
                     <ListItemText primary={room.name} />
                 </ListItem>
                 <Divider />
@@ -53,7 +68,7 @@ export default function BuildPublicList(props) {
     }
 
     return (
-        <div class = "itemWrapper">
+        <div className="itemWrapper">
             {items}
         </div>
     );

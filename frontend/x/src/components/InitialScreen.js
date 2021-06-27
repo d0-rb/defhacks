@@ -25,12 +25,13 @@ const theme = createMuiTheme({
 
 const styles = {
     button: {
-        margin: 15,
+        'margin-top': 15,
     },
     error: {
-        fontSize: '20px',
+        fontSize: '12px',
         color: 'red',
-        margin: 0,
+        position: 'relative',
+        top: -7,
     },
     textField: {
         margin: 10,
@@ -44,10 +45,21 @@ export class InitialScreen extends Component {
     state = {
         error: false,
     }
+    
+    joinMeeting = (room) => {
+        const { setAppState } = this.props;
 
-    join = e => {
-        e.preventDefault();
-        this.props.joinMeeting();
+        axios.get(`https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=` + room.workout_id).catch(err => {
+            const workout = err.response.data.Item;
+
+            setAppState({
+                page: 'meeting',
+                roomName: room.name,
+                workout: workout.workout,
+                startTime: room.startTime,
+                roomId: room.id,
+            })
+        })
     }
 
     create = e => {
@@ -59,19 +71,18 @@ export class InitialScreen extends Component {
         const { PrivateKeyCode } = this.props.values;
         console.log(PrivateKeyCode)
         axios.get(`https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms`).then(res => {
-            let valid = false;
+            let room = false;
             let rooms = res.data.Items;
             for (let index in rooms) {
-                let room = rooms[index];
-                console.log(room.id);
-                if (room.id === PrivateKeyCode) {
-                    valid = true;
+                let currentRoom = rooms[index];
+                if (currentRoom.id === PrivateKeyCode) {
+                    room = currentRoom;
                 }
             }
 
-            if (valid) {
+            if (room) {
                 this.setState({ error: false });
-                //join meeting
+                this.joinMeeting(room);
             } else {
                 this.setState({ error: true });
             }
@@ -79,7 +90,7 @@ export class InitialScreen extends Component {
     }
 
     render() {
-        const { values, fieldChange, fieldChangeMaster, rooms } = this.props;
+        const { values, fieldChange, fieldChangeMaster, rooms, setAppState } = this.props;
 
         return (
             <MuiThemeProvider theme={theme}>
@@ -91,6 +102,7 @@ export class InitialScreen extends Component {
                                 <ListItem button>
                                     <BuildPublicList
                                         rooms={rooms}
+                                        setAppState={setAppState}
                                     />
                                 </ListItem>
                             </List>
@@ -105,9 +117,11 @@ export class InitialScreen extends Component {
                                 <div className="meetings-button join-private-meeting">
                                     <TextField id="pkc" label="Private Key" style={styles.textfield} onChange={fieldChange('PrivateKeyCode')} defaultValue={values.PrivateKeyCode} variant="outlined" />
                                     <TextField id="name" label="Name" style={styles.textfield} onChange={fieldChangeMaster('displayName')} defaultValue={values.Name} variant="outlined" />
+                                    <br />
                                     <Button variant="contained" color="primary" style={styles.button} onClick={this.checkRoom}>
                                         Join Private Meeting
                                     </Button>
+                                    <br />
                                     {this.state.error && <label style={styles.error}>Invalid Private Key</label>}
                                 </div>
                             </div>

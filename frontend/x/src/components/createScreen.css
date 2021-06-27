@@ -98,3 +98,9 @@ div.wrapper h3 {
 .MuiOutlinedInput-input {
     color: white !important
 }
+
+#back-button {
+    position: absolute;
+    top: 20px;
+    right: 320px;
+}

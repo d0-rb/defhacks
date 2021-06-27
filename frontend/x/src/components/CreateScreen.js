@@ -82,6 +82,9 @@ const styles = {
 export class CreateScreen extends Component {
     constructor(props) {
         super(props);
+
+        this.startTime = new Date();
+
         this.myRefs = {};
         this.myRef = React.createRef();
         this.simulateClick = this.simulateClick.bind(this)
@@ -131,12 +134,12 @@ export class CreateScreen extends Component {
     }
 
     parseTime = time => {
-        console.log(time)
+        this.startTime = time;
     }
 	
     uploadEverything = (e) => {
         //Create meeting first
-        const { values } = this.props;
+        const { values, setAppState } = this.props;
 		
         var timestamp = new Date().getUTCMilliseconds();
         var secondPortion = Math.round(Math.random() * 100000000);
@@ -149,7 +152,8 @@ export class CreateScreen extends Component {
                 id,
                 workout_id: id1,
                 name: values.RoomName,
-                private: values.privatek
+                private: values.privatek,
+                startTime: this.startTime.getTime(),
             },
             TableName: 'rooms'
         });
@@ -166,7 +170,7 @@ export class CreateScreen extends Component {
             }
         )
 
-        //Add workouts to meeting
+        // upload workouts
         const json1 = JSON.stringify({Item: {'id': id1, 'name': values.WorkoutName, 'workout': values.workouts}, TableName: 'workouts'});
         axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
             headers: {
@@ -180,6 +184,15 @@ export class CreateScreen extends Component {
                 console.log(res)
             }
         )
+
+        // go to meeting room
+        setAppState({
+            page: 'meeting',
+            roomName: values.RoomName,
+            workout: values.workouts,
+            startTime: this.startTime.getTime(),
+            roomId: id,
+        })
     }
 
     fileUploadHandler = (e) => {
@@ -275,6 +288,11 @@ export class CreateScreen extends Component {
                         <div className="top-container">
                             <h1>Create Your Exercise Routine</h1>
                             <p>Start Your Fitness Jouney Today</p>
+                            <div id="back-button">
+                                <Button variant="outlined" size="large" color="secondary" style={styles.button} onClick={this.props.goBack}>
+                                    Back
+                                </Button>
+                            </div>
                         </div>
                         <div className="form-container">
                             <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChangeMaster('displayName')} defaultValue={values.Name} variant="outlined" />

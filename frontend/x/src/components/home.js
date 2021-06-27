@@ -34,6 +34,9 @@ export class Home extends Component {
 
     constructor(props) {
         super();
+    }
+
+    componentDidMount = () => {
         axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms')
             .then((response) => {
                 // handle success
@@ -101,9 +104,15 @@ export class Home extends Component {
         return finalArray[listNumber][input]
     }
 
+    goBack = () => {
+        this.setState({
+            step: 1,
+        })
+    }
+
     render() {
         const { step, PrivateKeyCode, workouts, workoutType, WorkoutName, privatek, rooms } = this.state;
-        const { roomName: RoomName, displayName: Name } = this.props;
+        const { roomName: RoomName, displayName: Name, setAppState } = this.props;
         const values = { PrivateKeyCode, Name, rooms };
         const values2 = { Name, workouts, workoutType, RoomName, WorkoutName, privatek };
 
@@ -114,6 +123,7 @@ export class Home extends Component {
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
                         fieldChangeMaster={this.fieldChangeMaster}
+                        setAppState={setAppState}
                         values={values}
                         rooms={rooms}
                     />
@@ -123,6 +133,8 @@ export class Home extends Component {
                     <CreateScreen
                         fieldChange={this.fieldChange}
                         fieldChangeMaster={this.fieldChangeMaster}
+                        goBack={this.goBack}
+                        setAppState={setAppState}
                         workouts={this.workouts}
                         values={values2}
                         changeWorkouts={this.changeWorkouts}

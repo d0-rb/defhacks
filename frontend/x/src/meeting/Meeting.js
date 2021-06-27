@@ -27,7 +27,7 @@ class Meeting extends React.Component {
     let currentIndex = 0
     workout.forEach((section) => {
       if (currentIndex <= sectionIndex) {
-        endTime += section.seconds;
+        endTime += parseInt(section.seconds, 10);
       }
 
       currentIndex += 1;
@@ -133,7 +133,7 @@ class Meeting extends React.Component {
   }
 
   render() {
-    const { roomName, displayName, password, workout, onLeave } = this.props;
+    const { roomName, displayName, password, workout, roomId, onLeave } = this.props;
     const { time, section, sectionStart, sectionEnd } = this.state;
 
     let currentGif = 'https://sectionpictures.s3.amazonaws.com/pending.png';
@@ -160,12 +160,14 @@ class Meeting extends React.Component {
     } else {
       nextUp = workout[section+1].title; // if there is one coming up
     }
+    console.log(workout);
+    console.log(time, sectionStart, sectionEnd);
 
     return (
       <div className="dark-background full-size">
         <div className="full-size vert-flex">
           <div className="light-background" id="timeline">
-            <Timeline workout={workout} time={time} length={workout.reduce((length, section) => length + section.seconds, 0)} />
+            <Timeline workout={workout} time={time} length={workout.reduce((length, section) => length + parseInt(section.seconds, 10), 0)} />
           </div>
           <div className="flex-fill" id="jitsi-frame">
             <Jitsi
@@ -183,7 +185,7 @@ class Meeting extends React.Component {
             <Preview title={nextUp} />
           </div>
         </div>
-        <Sidebar workout={workout} section={section} onLeave={onLeave} />
+        <Sidebar roomId={roomId} workout={workout} section={section} onLeave={onLeave} />
       </div>
     );
   }
