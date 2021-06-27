@@ -14,13 +14,10 @@ import axios from 'axios';
 import WorkoutCards from "./workoutCards";
 import TimeField from 'react-simple-timefield';
 import { MenuItem, Select } from '@material-ui/core';
-<<<<<<< Updated upstream
-=======
 import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '@ui5/webcomponents/dist/DurationPicker.js';
->>>>>>> Stashed changes
 
 const theme = createMuiTheme({
     palette: {
@@ -40,6 +37,14 @@ const styles = {
     button: {
         margin: 15,
     },
+    transformless: {
+        margin: 10,
+        height: '58px',
+        textTransform: 'none',
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle"
+    },
     textfield: {
         margin: 10,
         color: 'white',
@@ -56,6 +61,12 @@ const styles = {
 }
 
 export class CreateScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.myRef = React.createRef();
+        this.simulateClick = this.simulateClick.bind(this)
+    }
+
     join = e => {
         e.preventDefault();
         this.props.joinMeeting();
@@ -69,7 +80,7 @@ export class CreateScreen extends Component {
     addNewItem = e => {
         const { values } = this.props;
         var finalArray = values.workouts
-        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""})
+        finalArray.push({ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: "" })
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject)
         console.log(values.workouts)
@@ -87,11 +98,6 @@ export class CreateScreen extends Component {
         console.log(values.workouts)
     }
 
-<<<<<<< Updated upstream
-    fileUploadHandler = (e) => {
-        console.log(e)
-        var selectedFile = e.target.files[0];
-=======
     onFocus = e => {
         if (e.target.name !== "true") {
             e.target.selectionStart = 0;
@@ -107,20 +113,36 @@ export class CreateScreen extends Component {
     uploadEverything = (e) => {
         //Create meeting first
         const { values, workouts } = this.props;
->>>>>>> Stashed changes
         const fd = new FormData();
-        fd.append('name', e.target.files[0].name)
-        console.log(selectedFile)
-        var reader = new FileReader();
-        reader.onload = function (event) {
-            // The file's text will be printed here
-            console.log(event.target.result)
-            fd.append('data', event.target.result);
-        };
-        reader.readAsDataURL(selectedFile);
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/images', fd, {
+        var timestamp = new Date().getUTCMilliseconds();
+        var secondPortion = Math.round(Math.random() * 10000);
+        var id = timestamp + secondPortion;
+        var timestamp1 = new Date().getUTCMilliseconds();
+        var secondPortion1 = Math.round(Math.random() * 10000);
+        var id1 = timestamp1 + secondPortion1;
+        fd.append('id', id);
+        fd.append('workout_id', id1);
+        fd.append('name', values.RoomName)
+        fd.append('private', values.privatek)
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
             onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total) * 100)
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+
+        //Add workouts to meeting
+        const fd1 = new FormData();
+        fd1.append('id', id1);
+        fd1.append('name', values.WorkoutName);
+        fd1.append('workout', values.workouts);
+        fd1.append('TableName', 'workouts');
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd1, {
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
         }).then(
             res => {
@@ -129,38 +151,75 @@ export class CreateScreen extends Component {
         )
     }
 
+    fileUploadHandler = (e) => {
+        var data;
+        var selectedFile = e.target.files[0];
+        var reader = new FileReader();
+        const { values } = this.props;
+        reader.onload = function (event) {
+            // The file's text will be printed here
+            data = event.target.result;
+            const json = JSON.stringify({ 'name': e.target.files[0].name, 'data': data });
+            axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/images', json, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                onUploadProgress: progressEvent => {
+                    console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+                }
+            }).then(
+                res => {
+                    var listNumber = e.target.name.split(":")[1]
+                    var finalArray = values.workouts
+                    finalArray[listNumber]['gif'] = res.data.url
+                    var workoutsObject = { workouts: finalArray }
+                    this.setState(workoutsObject);
+                }
+            )
+        }.bind(this);
+        reader.readAsDataURL(selectedFile);
+    }
+
+    simulateClick() {
+        this.myRef.current.click();
+    }
+
     createWorkoutItems = () => {
-        const { values, getWorkouts, time, changeWorkouts } = this.props;
+        const { values, getWorkouts, changeWorkouts } = this.props;
 
         let formControl = []
 
         for (var i = 0; i < values.workouts.length; i++) {
             let index = i;
             let workoutSection = <div className="workout-fill-in">
-                <label><Button variant="contained" color="secondary" name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}>Remove</Button></label>
+                <label>
+                    <IconButton color="primary" icon="close" size="large" name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}>
+                        <CloseIcon />
+                    </IconButton>
+                </label>
                 <Select name={"workoutType:" + i} style={styles.textfield} onChange={changeWorkouts("workoutType")} value={getWorkouts(index, "workoutType")} variant="outlined">
                     <MenuItem value="exercise">Exercise</MenuItem>
                     <MenuItem value="break">Break</MenuItem>
                 </Select>
-                <TextField label="Name of Workout" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
+                <TextField label="Name of Interval" name={"workoutName:" + i} style={styles.textfield} value={getWorkouts(index, "workoutName")} onChange={changeWorkouts("workoutName")} variant="outlined" />
                 <TimeField
                     name={"time:" + i}
                     value={getWorkouts(index, "time")}                     // {String}   required, format '00:00' or '00:00:00'
-                    // {Function} required
                     colon=":"
                     onChange={changeWorkouts("time")}
                     showSeconds
                     style={styles.textfield}
-                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" onBlur={(e) => this.updateFocus(e, false)} onClick={this.onFocus} />}
+                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" name={false} onBlur={(e) => this.updateFocus(e, false)} onClick={this.onFocus} />}
                 />
-                <div className="fileUploadContainer">
-                    <input type="file" name={"file:" + i} id={"file" + i} onChange={this.fileUploadHandler} />
-                    <label htmlFor={"file" + i}><Button variant="contained" color="secondary" style={styles.button}>Select Photo For Interval</Button></label>
-                </div>
+
+                <input type="file" name={"file:" + i} id={"file" + i} style={{ display: "none" }} ref={this.myRef} onChange={this.fileUploadHandler} />
+                <label htmlFor={"file" + i}>
+                    <Button variant="outlined" size="large" color="primary" style={styles.transformless} onClick={this.simulateClick} startIcon={<CloudUploadIcon />}>Exercise Photo</Button>
+                </label>
+
             </div>
             formControl.push(workoutSection)
         }
-
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
         let addMore = <div className="bottom-button-holder">
@@ -183,18 +242,19 @@ export class CreateScreen extends Component {
                             <p>Start Your Fitness Jouney Today</p>
                         </div>
                         <div className="form-container">
-                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('name')} defaultValue={values.Name} variant="outlined" />
-                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('roomName')} defaultValue={values.RoomName} variant="outlined" />
+                            <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
+                            <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
+                            <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
                             <div className="formContainer">
                                 <FormControl component="fieldset">
-                                    <RadioGroup aria-label="private" name="private1" value={values.privateStatus} onChange={fieldChange('privateStatus')}>
+                                    <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
                                         <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
                                         <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
                                     </RadioGroup>
                                 </FormControl>
                             </div>
                             <Divider />
-                            <h3>Workouts</h3>
+                            <h3>Intervals</h3>
                             <WorkoutCards
                                 createWorkoutItems={this.createWorkoutItems}
                                 workouts={workouts}
