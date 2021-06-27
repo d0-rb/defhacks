@@ -65,7 +65,20 @@ export class Home extends Component {
         console.log(this.state);
     }
 
-    
+    changeWorkouts = input => e => {
+        var listNumber = e.target.name.split(":")[1]
+        const { workouts } = this.state;
+        var finalArray = workouts
+        finalArray[listNumber][input] = e.target.value
+        var workoutsObject = { workouts: finalArray }
+        this.setState(workoutsObject);
+    }
+
+    getWorkouts = (listNumber, input) => {
+        const { workouts } = this.state;
+        var finalArray = workouts
+        return finalArray[listNumber][input]
+    }
 
     render() {
         const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek, rooms } = this.state;
@@ -90,6 +103,8 @@ export class Home extends Component {
                         workouts={this.workouts}
                         values={values2}
                         time={time}
+                        changeWorkouts={this.changeWorkouts}
+                        getWorkouts={this.getWorkouts}
                     />
                 )
             case 3:

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, StylesProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -17,6 +18,18 @@ import { MenuItem, Select } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import '@ui5/webcomponents/dist/DurationPicker.js';
+import DateTimePicker from 'react-datetime-picker'
+
+const GreenRadio = withStyles({
+    root: {
+        color: green[400],
+        '&$checked': {
+            color: green[600],
+        },
+    },
+    checked: {},
+})((props) => <Radio color="default" {...props} />);
 
 const theme = createMuiTheme({
     palette: {
@@ -57,6 +70,20 @@ const styles = {
         borderColor: "white",
         verticalAlign: "middle",
         float: "right"
+    },
+    datepicker: {
+        margin: 10,
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle",
+        fontSize: '30px'
+    },
+    timepicker: {
+        borderStyle: 'solid',
+        border: '2px',
+        background: "#282c34",
+        color: 'white',
+        height: '58px'
     }
 }
 
@@ -171,6 +198,63 @@ export class CreateScreen extends Component {
         )
     }
 
+    onFocus = e => {
+        if (e.target.name !== "true") {
+            e.target.selectionStart = 0;
+            e.target.selectionEnd = 0;
+        }
+        this.updateFocus(e, true)
+    }
+
+    updateFocus = (e, state) => {
+        e.target.name = state
+    }
+
+    parseTime = time => {
+        console.log(time)
+    }
+
+    uploadEverything = (e) => {
+        //Create meeting first
+        const { values } = this.props;
+        const fd = new FormData();
+        var timestamp = new Date().getUTCMilliseconds();
+        var secondPortion = Math.round(Math.random() * 10000);
+        var id = timestamp + secondPortion;
+        var timestamp1 = new Date().getUTCMilliseconds();
+        var secondPortion1 = Math.round(Math.random() * 10000);
+        var id1 = timestamp1 + secondPortion1;
+        fd.append('id', id);
+        fd.append('workout_id', id1);
+        fd.append('name', values.RoomName)
+        fd.append('private', values.privatek)
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+
+        //Add workouts to meeting
+        const fd1 = new FormData();
+        fd1.append('id', id1);
+        fd1.append('name', values.WorkoutName);
+        fd1.append('workout', values.workouts);
+        fd1.append('TableName', 'workouts');
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd1, {
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+    }
+
     fileUploadHandler = (e) => {
         var data;
         var selectedFile = e.target.files[0];
@@ -269,7 +353,10 @@ export class CreateScreen extends Component {
         }
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
-        let addMore = <div className="bottom-button-holder"><Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Exercise</Button><Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button></div>
+        let addMore = <div className="bottom-button-holder">
+            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Interval</Button>
+            <Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button>
+        </div>
         formControl.push(addMore)
         return formControl
     }
@@ -289,17 +376,18 @@ export class CreateScreen extends Component {
                             <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
                             <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
                             <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
+                            <DateTimePicker value={new Date()} onChange={this.parseTime} style={styles.datepicker} disableClock={true} amPmAriaLabel='test' />
                             <div className="formContainer">
                                 <FormControl component="fieldset">
                                     <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
-                                        <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
-                                        <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
+                                        <FormControlLabel value="public" control={<GreenRadio />} label="Public Meeting" />
+                                        <FormControlLabel value="private" control={<GreenRadio />} label="Private Meeting" />
                                     </RadioGroup>
                                 </FormControl>
                             </div>
+
                             <Divider />
                             <h3>Intervals</h3>
-
                             <Select name={"avengers"} style={styles.avengers} defaultValue="cu" variant="outlined" onChange={this.populateFields}>
                                 <MenuItem value="cu">Custom</MenuItem>
                                 <MenuItem value="ca">Captain America</MenuItem>

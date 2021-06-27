@@ -71,3 +71,35 @@ div.wrapper h3 {
 .MuiOutlinedInput-input {
     color: white !important
 }
+.workout-fill-in {
+    padding: 5px 10px;
+}
+
+.react-datetime-picker__inputGroup__input {
+    color: white;
+}
+
+.MuiInputBase-input {
+    color: white !important;
+}
+
+.react-datetime-picker__button__icon {
+    border-width: 0px;
+    stroke: white !important;
+}
+
+.react-datetime-picker__wrapper {
+    border-color: white !important;
+    border: normal !important;
+    border-radius: 4px !important;
+    height: 56px !important;
+    vertical-align: middle !important;
+    align-items: center !important;
+}
+
+.react-datetime-picker {
+    vertical-align: middle !important;
+    font-size: 20px !important;
+    text-align: center !important;
+    margin-left: 10px;
+}
