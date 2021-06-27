@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CreateScreen from "./CreateScreen";
 import InitialScreen from "./InitialScreen";
 import VideoScreen from "./VideoScreen";
+import axios from "axios";
 
 const styles = {
     button: {
@@ -23,6 +24,28 @@ export class Home extends Component {
         RoomName: '',
         WorkoutName: '',
         privatek: '',
+        rooms: [],
+    }
+
+    constructor(props) {
+        super();
+        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms')
+            .then((response) => {
+                // handle success
+                console.log(response);
+                var rooms = [];
+                response.data.Items.forEach(element => {
+                    console.log(element)
+                    if(element.private == "public") {
+                        rooms.push(
+                            element
+                        )
+                    }
+                })
+                this.setState({
+                    rooms,
+                });
+            });
     }
 
     joinMeeting = () => {
@@ -71,8 +94,8 @@ export class Home extends Component {
     }
 
     render() {
-        const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek } = this.state;
-        const values = { PrivateKeyCode, Name };
+        const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek, rooms } = this.state;
+        const values = { PrivateKeyCode, Name, rooms };
         const values2 = { Name, workouts, time, workoutType, RoomName, WorkoutName, privatek };
 
         switch (step) {
@@ -83,6 +106,7 @@ export class Home extends Component {
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
                         values={values}
+                        rooms={rooms}
                     />
                 )
             case 2:

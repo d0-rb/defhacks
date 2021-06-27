@@ -55,6 +55,7 @@ const styles = {
 export class CreateScreen extends Component {
     constructor(props) {
         super(props);
+        this.myRefs = {};
         this.myRef = React.createRef();
         this.simulateClick = this.simulateClick.bind(this)
     }
@@ -170,14 +171,23 @@ export class CreateScreen extends Component {
         this.myRef.current.click();
     }
 
+    simulateClicks(id) {
+        this.myRefs[id].current.click();
+    }
+
+    populateFields = () => {
+        
+    }
+
     createWorkoutItems = () => {
         const { values, getWorkouts, changeWorkouts } = this.props;
 
         let formControl = []
 
-        for (var i = 0; i < values.workouts.length; i++) {
+        for (let i = 0; i < values.workouts.length; i++) {
             let index = i;
-            let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}></IconButton></label>
+            this.myRefs[i] = React.createRef();
+            let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}><CloseIcon /></IconButton></label>
             <Select name={"type:" + i} style={styles.textfield} onChange={changeWorkouts("type")} value={getWorkouts(index, "type")} variant="outlined">
                 <MenuItem value="exercise">Exercise</MenuItem>
                 <MenuItem value="break">Break</MenuItem>
@@ -193,9 +203,9 @@ export class CreateScreen extends Component {
                     input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "duration")} variant="outlined" />}
                 />
 
-                <input type="file" name={"file:" + i} id={"file" + i} style={{ display: "none" }} ref={this.myRef} onChange={this.fileUploadHandler} />
+                <input type="file" name={"file:" + i} id={"file" + i} style={{ display: "none" }} ref={this.myRefs[i]} onChange={this.fileUploadHandler} />
                 <label htmlFor={"file" + i}>
-                    <Button variant="outlined" size="large" color="primary" style={styles.transformless} onClick={this.simulateClick} startIcon={<CloudUploadIcon />}>Exercise Photo</Button>
+                    <Button variant="outlined" size="large" color="primary" style={styles.transformless} onClick={() => this.simulateClicks(i)} startIcon={<CloudUploadIcon />}>Exercise Photo</Button>
                 </label>
 
             </div>
@@ -233,6 +243,13 @@ export class CreateScreen extends Component {
                             </div>
                             <Divider />
                             <h3>Intervals</h3>
+                            <Select name={"avengers"} style={styles.textfield}  variant="outlined" onChange={this.populateFields()}>
+                                <MenuItem value="ca">Captain America</MenuItem>
+                                <MenuItem value="bw">Black Widow</MenuItem>
+                                <MenuItem value="im">Iron Man</MenuItem>
+                                <MenuItem value="cm">Captain Marvel</MenuItem>
+                                <MenuItem value="bp">Black Panther</MenuItem>
+                            </Select>
                             <WorkoutCards
                                 createWorkoutItems={this.createWorkoutItems}
                                 workouts={workouts}

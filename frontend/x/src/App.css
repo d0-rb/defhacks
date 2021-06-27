@@ -75,6 +75,7 @@ div.groups {
 div.group {
     width: 49.5%;
     vertical-align: top;
+    padding: 10px 25px;
 }
 
 .main-list {
