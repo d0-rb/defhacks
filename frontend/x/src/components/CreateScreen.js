@@ -385,7 +385,7 @@ export class CreateScreen extends Component {
                         </div>
                         <div className="overlay" id="logo-container">
                             <div className="flex">
-                                <img id="logo" src="https://yt4.ggpht.com/ytc/AKedOLTjIHmXJrT1z4ReMkvWExZnefYmw_mqTexs3Cg4dQ=s32-c-k-c0x00ffffff-no-rj" style={{width: 100, height: 100}} />
+                                <img id="logo" src="logo.png" style={{width: 100, height: 100}} />
                             </div>
                         </div>
                     </div>
