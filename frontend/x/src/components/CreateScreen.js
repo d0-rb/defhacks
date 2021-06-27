@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { MuiThemeProvider, StylesProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -18,6 +19,17 @@ import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import '@ui5/webcomponents/dist/DurationPicker.js';
+import DateTimePicker from 'react-datetime-picker'
+
+const GreenRadio = withStyles({
+    root: {
+        color: green[400],
+        '&$checked': {
+            color: green[600],
+        },
+    },
+    checked: {},
+})((props) => <Radio color="default" {...props} />);
 
 const theme = createMuiTheme({
     palette: {
@@ -50,6 +62,13 @@ const styles = {
         color: 'white',
         borderColor: "white",
         verticalAlign: "middle"
+    },
+    datepicker: {
+        margin: 10,
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle",
+        fontSize: '30px'
     },
     timepicker: {
         borderStyle: 'solid',
@@ -108,6 +127,10 @@ export class CreateScreen extends Component {
 
     updateFocus = (e, state) => {
         e.target.name = state
+    }
+
+    parseTime = time => {
+        console.log(time)
     }
 
     uploadEverything = (e) => {
@@ -245,14 +268,16 @@ export class CreateScreen extends Component {
                             <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
                             <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChange('RoomName')} defaultValue={values.RoomName} variant="outlined" />
                             <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
+                            <DateTimePicker value={new Date()} onChange={this.parseTime} style={styles.datepicker} disableClock='true' amPmAriaLabel='test' />
                             <div className="formContainer">
                                 <FormControl component="fieldset">
                                     <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
-                                        <FormControlLabel value="public" control={<Radio />} label="Public Meeting" />
-                                        <FormControlLabel value="private" control={<Radio />} label="Private Meeting" />
+                                        <FormControlLabel value="public" control={<GreenRadio/>} label="Public Meeting" />
+                                        <FormControlLabel value="private" control={<GreenRadio />} label="Private Meeting" />
                                     </RadioGroup>
                                 </FormControl>
                             </div>
+                            
                             <Divider />
                             <h3>Intervals</h3>
                             <WorkoutCards
