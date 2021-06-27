@@ -4,11 +4,8 @@ import { createMuiTheme } from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { List } from '@material-ui/core';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import green from '@material-ui/core/colors/green';
-
+import BuildPublicList from './publicList';
 
 const theme = createMuiTheme({
     palette: {
@@ -32,7 +29,8 @@ const styles = {
         margin: 10,
         color: 'white',
         borderColor: "white",
-    }
+    },
+
 }
 
 export class InitialScreen extends Component {
@@ -47,7 +45,7 @@ export class InitialScreen extends Component {
     }
 
     render() {
-        const { values, fieldChange } = this.props;
+        const { values, fieldChange, rooms } = this.props;
 
         return (
             <MuiThemeProvider theme={theme}>
@@ -57,29 +55,9 @@ export class InitialScreen extends Component {
                         <div className="group public-meetings">
                             <List component="nav" className="main-list" aria-label="secondary">
                                 <ListItem button>
-                                    <ListItemText primary="Group 1" />
-                                </ListItem>
-                                <Divider />
-                                <ListItem button>
-                                    <ListItemText primary="Group 2" />
-                                </ListItem>
-                                <Divider />
-                                <ListItem button>
-                                    <ListItemText primary="Group 3" />
-                                </ListItem>
-                                <Divider />
-                                <ListItem button>
-                                    <ListItemText primary="Group 4" />
-                                </ListItem>
-                                <Divider />
-                                <ListItem button>
-                                    <ListItemText primary="Group 5" />
-                                </ListItem>
-                                <Divider />
-                                <ListItem button>
-                                    <ListItemText primary="Group 6" />
-                                </ListItem>
-                                <Divider />
+                                <BuildPublicList
+                                    rooms={rooms}
+                                />
                             </List>
                         </div>
                         <div class="group">
@@ -92,6 +70,7 @@ export class InitialScreen extends Component {
                                 <div class="meetings-button join-private-meeting">
                                     <TextField id="pkc" label="Private Key" style={styles.textfield} onChange={fieldChange('PrivateKeyCode')} defaultValue={values.PrivateKeyCode} variant="outlined" />
                                     <TextField id="name" label="Name" style={styles.textfield} onChange={fieldChange('Name')} defaultValue={values.Name} variant="outlined" />
+                                    <br/>
                                     <Button variant="contained" color="primary" style={styles.button} onClick={this.join}>
                                         Join Private Meeting
                                     </Button>

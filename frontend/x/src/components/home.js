@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CreateScreen from "./CreateScreen";
 import InitialScreen from "./InitialScreen";
 import VideoScreen from "./VideoScreen";
+import axios from "axios";
 
 const styles = {
     button: {
@@ -17,9 +18,33 @@ const styles = {
 export class Home extends Component {
     state = {
         step: 1,
-        PrivateKeyCode: '',
-        workouts: [{ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""}],
+        workouts: [{ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise"}],
         Name: '',
+        RoomName: '',
+        WorkoutName: '',
+        privatek: '',
+        rooms: [],
+    }
+
+    constructor(props) {
+        super();
+        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms?TableName=rooms')
+            .then((response) => {
+                // handle success
+                console.log(response);
+                var rooms = [];
+                response.data.Items.forEach(element => {
+                    console.log(element)
+                    if(element.private == "public") {
+                        rooms.push(
+                            element
+                        )
+                    }
+                })
+                this.setState({
+                    rooms,
+                });
+            });
     }
 
     joinMeeting = () => {
@@ -38,13 +63,26 @@ export class Home extends Component {
         this.setState({
             [input]: e.target.value
         })
+        console.log(this.state);
     }
 
     changeWorkouts = input => e => {
         var listNumber = e.target.name.split(":")[1]
         const { workouts } = this.state;
         var finalArray = workouts
-        finalArray[listNumber][input] = e.target.value
+		
+        if(input == "duration"){
+            const seconds = e.target.value.split(':').reduce((sum, current) => {
+                return {
+                    time: sum.time + current * Math.pow(60, sum.index),
+                    index: sum.index - 1,
+                }
+            }, { time: 0, index: 2 }).time;
+            finalArray[listNumber][input] = e.target.value;
+            finalArray[listNumber]['seconds'] = seconds;
+        }else {
+            finalArray[listNumber][input] = e.target.value
+        }
         var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject);
     }
@@ -56,9 +94,9 @@ export class Home extends Component {
     }
 
     render() {
-        const { step, PrivateKeyCode, Name, workouts, time, workoutType } = this.state;
-        const values = { PrivateKeyCode, Name };
-        const values2 = { Name, workouts, time, workoutType };
+        const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek, rooms } = this.state;
+        const values = { PrivateKeyCode, Name, rooms };
+        const values2 = { Name, workouts, time, workoutType, RoomName, WorkoutName, privatek };
 
         switch (step) {
             case 1:
@@ -68,6 +106,7 @@ export class Home extends Component {
                         createMeeting={this.createMeeting}
                         fieldChange={this.fieldChange}
                         values={values}
+                        rooms={rooms}
                     />
                 )
             case 2:

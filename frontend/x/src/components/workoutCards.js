@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 export default function WorkoutCards(props) {
     const classes = useStyles();
     const { createWorkoutItems } = props;
-    
+
     return (
         <div className="all-workouts">
             {createWorkoutItems()}

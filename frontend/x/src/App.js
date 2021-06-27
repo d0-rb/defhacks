@@ -1,5 +1,7 @@
+import './App.css';
 import Meeting from './meeting/Meeting';
 import React from 'react';
+import Home from './components/home';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({

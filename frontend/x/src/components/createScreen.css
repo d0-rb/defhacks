@@ -92,4 +92,7 @@ div.wrapper h3 {
     font-size: 20px !important;
     text-align: center !important;
     margin-left: 10px;
+
+.MuiOutlinedInput-input {
+    color: white !important
 }
