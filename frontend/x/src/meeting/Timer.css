@@ -1,0 +1,25 @@
+#timer-container {
+    position: relative;
+}
+
+#clock {
+    position: absolute;
+    font-weight: bold;
+    text-align: center;
+    user-select: none;
+    top: 0%;   
+    left: 50%;
+}
+
+#clock-text {
+    position: relative;
+    font-size: calc(60px + 4vh);
+    left: -50%;
+}
+
+#clock-label {
+    position: relative;
+    font-size: calc(10px + 4vh);
+    top: 10%;
+    left: -50%;
+}

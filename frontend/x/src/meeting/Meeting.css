@@ -1,8 +1,36 @@
-.light-background {
-    background-color: #ffff99;
+.hide-top {
+    height: 0vh;
+    transition: height .5s;
 }
 
-.full-size {
+.hide-top.open {
+    height: 7vh;
+}
+
+.checkpoint {
+    position: absolute;
+    bottom: 0px;
+    left: -2px;
+    width: 2px;
+    height: 50%;
+}
+
+.checkpoint-container {
+    position: relative;
+}
+
+#workout-checkpoints {
+    display: flex;
+}
+
+#bottom-bar {
     width: 100%;
-    height: 100%;
+    min-height: 150px;
+    height: 22%;
+}
+
+#timeline {
+    width: 100%;
+    min-height: 20px;
+    height: 3%;
 }

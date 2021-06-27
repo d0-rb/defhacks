@@ -1,0 +1,18 @@
+#sidebar-overlay {
+    width: 100px;
+}
+
+#sidebar-container {
+    height: 100%;
+    width: 20vw;
+}
+
+#sidebar-container #title {
+    text-align: center;
+    padding-bottom: 5px;
+    padding-top: 20px;
+}
+
+#summary-list {
+    overflow: auto;
+}

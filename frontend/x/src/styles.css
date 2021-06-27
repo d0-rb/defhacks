@@ -3,6 +3,69 @@
     height: 100%;
 }
 
+.full-height {
+    height: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
 .dark-background {
-    background-color: #212121;
+    background-color: #282c34;
+}
+
+.mid-background {
+    background-color: #333333;
+}
+
+.light-background {
+    background-color: #282c34;
+}
+
+.neon-background {
+    background-color: #4caf50;
+}
+
+.white-background {
+    background-color: #f1f8e9;
+}
+
+.neon-color {
+    color: #64dd17;
+}
+
+.white-color {
+    color: #f5f5f5;
+}
+
+.overlay {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.vert-flex {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.horiz-flex {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.flex {
+    display: flex;
+}
+
+.vert {
+    flex-direction: column;
+}
+
+.flex-fill {
+    flex-grow: 1;
 }
