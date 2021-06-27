@@ -246,7 +246,7 @@ export class CreateScreen extends Component {
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
         let addMore = <div className="bottom-button-holder">
-            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Exercise</Button>
+            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Interval</Button>
             <Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button>
         </div>
         formControl.push(addMore)
@@ -272,12 +272,12 @@ export class CreateScreen extends Component {
                             <div className="formContainer">
                                 <FormControl component="fieldset">
                                     <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
-                                        <FormControlLabel value="public" control={<GreenRadio/>} label="Public Meeting" />
+                                        <FormControlLabel value="public" control={<GreenRadio />} label="Public Meeting" />
                                         <FormControlLabel value="private" control={<GreenRadio />} label="Private Meeting" />
                                     </RadioGroup>
                                 </FormControl>
                             </div>
-                            
+
                             <Divider />
                             <h3>Intervals</h3>
                             <WorkoutCards

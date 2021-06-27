@@ -18,7 +18,7 @@ export class Home extends Component {
     state = {
         step: 1,
         PrivateKeyCode: '',
-        workouts: [{ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: ""}],
+        workouts: [{ workoutName: "", time: "00:00:00", workoutType: "exercise", gif: "" }],
         Name: '',
     }
 
