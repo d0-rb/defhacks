@@ -89,6 +89,7 @@ class Meeting extends React.Component {
         time: (currentTime.getTime() - startTime)/1000,
       });
     }
+    console.log(this.state);
 
     window.requestAnimationFrame(this.update);
   };
@@ -160,7 +161,6 @@ class Meeting extends React.Component {
     } else {
       nextUp = workout[section+1].title; // if there is one coming up
     }
-    console.log(workout);
     console.log(time, sectionStart, sectionEnd);
 
     return (
@@ -171,7 +171,7 @@ class Meeting extends React.Component {
           </div>
           <div className="flex-fill" id="jitsi-frame">
             <Jitsi
-              roomName={roomName}
+              roomName={roomId}
               displayName={displayName}
               frameStyle={{ display: 'block', width: '100%', height: '100%' }}
               containerStyle={{ width:'800px', height: '400px' }}

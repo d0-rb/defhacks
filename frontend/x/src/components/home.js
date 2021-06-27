@@ -109,6 +109,10 @@ export class Home extends Component {
         })
     }
 
+    setHomeState = (state) => {
+        this.setState(state);
+    }
+
     render() {
         const { step, PrivateKeyCode, workouts, workoutType, WorkoutName, privatek, rooms } = this.state;
         const { roomName: RoomName, displayName: Name, setAppState } = this.props;
@@ -134,7 +138,7 @@ export class Home extends Component {
                         fieldChangeMaster={this.fieldChangeMaster}
                         goBack={this.goBack}
                         setAppState={setAppState}
-                        workouts={this.workouts}
+                        setHomeState={this.setHomeState}
                         values={values2}
                         changeWorkouts={this.changeWorkouts}
                         getWorkouts={this.getWorkouts}

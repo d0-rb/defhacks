@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
                   {listItems}
                 </List>
               </div>
-              <Button color="secondary" fullWidth size="large" onClick={this.copyId}>
+              <Button color="primary" fullWidth size="large" onClick={this.copyId}>
                 {roomId}
               </Button>
               <Button variant="contained" color="primary" fullWidth size="large" onClick={onLeave}>

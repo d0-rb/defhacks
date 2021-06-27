@@ -37,7 +37,7 @@ const theme = createMuiTheme({
             main: green[500]
         },
         secondary: {
-            main: "#ddd"
+            main: "#dddddd"
         }
     },
     typography: {
@@ -98,10 +98,6 @@ export class CreateScreen extends Component {
         this.simulateClick = this.simulateClick.bind(this)
     }
 
-    state = {
-        workouts: this.props.values.workouts,
-    }
-
     join = e => {
         e.preventDefault();
         this.props.joinMeeting();
@@ -124,15 +120,15 @@ export class CreateScreen extends Component {
     removeItem = e => {
         const i = e.currentTarget.name.split(":")[1]
         console.log(i);
-        var finalArray = this.state.workouts;
+        var finalArray = this.props.values.workouts;
         finalArray.splice(i, 1);
-        this.setState({ workouts: finalArray });
-        console.log(this.state.workouts)
+        this.props.setHomeState({ workouts: finalArray });
+        console.log(this.props.values.workouts)
     }
 
     changeWorkouts = input => e => {
         var listNumber = e.target.name.split(":")[1]
-        const { workouts } = this.state;
+        const { workouts } = this.props.values
         var finalArray = workouts
         if (input == "duration") {
             const seconds = e.target.value.split(':').reduce((sum, current) => {
@@ -167,7 +163,7 @@ export class CreateScreen extends Component {
     }
 	
     getWorkouts = (listNumber, input) => {
-        const { workouts } = this.props;
+        const { workouts } = this.props.values;
         var finalArray = workouts
         return finalArray[listNumber][input]
     }
@@ -195,62 +191,6 @@ export class CreateScreen extends Component {
             headers: {
                 'Content-Type': 'application/json'
             },
-            onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
-            }
-        }).then(
-            res => {
-                console.log(res)
-            }
-        )
-
-        //Add workouts to meeting
-        const json1 = JSON.stringify({ Item: { 'id': id1, 'name': values.WorkoutName, 'workout': this.state.workouts }, TableName: 'workouts' });
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            onUploadProgress: progressEvent => {
-                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
-            }
-        }).then(
-            res => {
-                console.log(res)
-            }
-        )
-    }
-
-    onFocus = e => {
-        if (e.target.name !== "true") {
-            e.target.selectionStart = 0;
-            e.target.selectionEnd = 0;
-        }
-        this.updateFocus(e, true)
-    }
-
-    updateFocus = (e, state) => {
-        e.target.name = state
-    }
-
-    parseTime = time => {
-        console.log(time)
-    }
-
-    uploadEverything = (e) => {
-        //Create meeting first
-        const { values } = this.props;
-        const fd = new FormData();
-        var timestamp = new Date().getUTCMilliseconds();
-        var secondPortion = Math.round(Math.random() * 10000);
-        var id = timestamp + secondPortion;
-        var timestamp1 = new Date().getUTCMilliseconds();
-        var secondPortion1 = Math.round(Math.random() * 10000);
-        var id1 = timestamp1 + secondPortion1;
-        fd.append('id', id);
-        fd.append('workout_id', id1);
-        fd.append('name', values.RoomName)
-        fd.append('private', values.privatek)
-        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
             onUploadProgress: progressEvent => {
                 console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
@@ -323,31 +263,36 @@ export class CreateScreen extends Component {
     }
 
     populateFields = e => {
+        const { setHomeState } = this.props;
         // captain - https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=6261898
         let dictFields = { "ca": '6261898', "bw": "2200164", "im": "194135", "cm": "7488586", "bp": "5495241" }
-        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=' + dictFields[e.target.value])
-            .then((response) => {
-                // handle success
-                console.log(response);
-                let workouts = [];
-                response.data.Item.workout.forEach(element => {
-                    console.log(element)
-                    workouts.push(
-                        element
-                    )
-                })
-                this.setState({ workouts: workouts })
-            }).catch((err) => {
-                let workouts = [];
-                err.response.data.Item.workout.forEach(element => {
-                    console.log(element)
-                    workouts.push(
-                        element
-                    )
+        if (e.target.value in dictFields) {
+            axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=' + dictFields[e.target.value])
+                .then((response) => {
+                    // handle success
+                    console.log(response);
+                    let workouts = [];
+                    response.data.Item.workout.forEach(element => {
+                        console.log(element)
+                        workouts.push(
+                            element
+                        )
+                    })
+                    setHomeState({ workouts: workouts })
+                }).catch((err) => {
+                    let workouts = [];
+                    err.response.data.Item.workout.forEach(element => {
+                        console.log(element)
+                        workouts.push(
+                            element
+                        )
+                    });
+                    console.log(workouts);
+                    setHomeState({ workouts: workouts })
                 });
-                console.log(workouts);
-                this.setState({ workouts: workouts })
-            });
+        } else {
+
+        }
     }
 
     createWorkoutItems = () => {
@@ -355,6 +300,7 @@ export class CreateScreen extends Component {
 
         let formControl = []
 
+        console.log(values.workouts);
         for (let i = 0; i < values.workouts.length; i++) {
             let index = i;
             this.myRefs[i] = React.createRef();
@@ -393,7 +339,7 @@ export class CreateScreen extends Component {
     }
 
     render() {
-        const { values, fieldChange, fieldChangeMaster, workouts } = this.props;
+        const { values, fieldChange, fieldChangeMaster } = this.props;
 
         return (
             <MuiThemeProvider theme={theme}>
@@ -401,7 +347,7 @@ export class CreateScreen extends Component {
                     <div className="wrapper">
                         <div className="top-container">
                             <h1>Create Your Exercise Routine</h1>
-                            <p>Start Your Fitness Jouney Today</p>
+                            <p>Start Your Fitness Journey Today</p>
                             <div id="back-button">
                                 <Button variant="outlined" size="large" color="secondary" style={styles.button} onClick={this.props.goBack}>
                                     Back
@@ -434,8 +380,13 @@ export class CreateScreen extends Component {
                             </Select>
                             <WorkoutCards
                                 createWorkoutItems={this.createWorkoutItems}
-                                workouts={this.state.workouts}
+                                workouts={this.props.values.workouts}
                             />
+                        </div>
+                        <div className="overlay" id="logo-container">
+                            <div className="flex">
+                                <img id="logo" src="https://yt4.ggpht.com/ytc/AKedOLTjIHmXJrT1z4ReMkvWExZnefYmw_mqTexs3Cg4dQ=s32-c-k-c0x00ffffff-no-rj" style={{width: 100, height: 100}} />
+                            </div>
                         </div>
                     </div>
                 </React.Fragment>

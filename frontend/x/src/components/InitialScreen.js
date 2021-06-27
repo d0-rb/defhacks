@@ -8,6 +8,8 @@ import green from '@material-ui/core/colors/green';
 import BuildPublicList from './publicList';
 import ListItem from '@material-ui/core/ListItem';
 import axios from 'axios';
+import '../styles.css';
+import './InitialScreen.css';
 
 const theme = createMuiTheme({
     palette: {
@@ -95,12 +97,13 @@ export class InitialScreen extends Component {
         return (
             <MuiThemeProvider theme={theme}>
                 <React.Fragment>
-                    <h1>Welcome to x</h1>
+                    <h1>Exercise Reimagined</h1>
                     <div className="groups">
                         <div className="group public-meetings">
                             <List component="nav" className="main-list" aria-label="secondary">
                                 <BuildPublicList
                                     rooms={rooms}
+                                    setAppState={setAppState}
                                 />
                             </List>
                         </div>
@@ -121,6 +124,14 @@ export class InitialScreen extends Component {
                                     <br />
                                     {this.state.error && <label style={styles.error}>Invalid Private Key</label>}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="overlay" id="logo-container">
+                        <div className="flex">
+                            <img id="logo" src="https://yt4.ggpht.com/ytc/AKedOLTjIHmXJrT1z4ReMkvWExZnefYmw_mqTexs3Cg4dQ=s32-c-k-c0x00ffffff-no-rj" />
+                            <div id="app-name" className="vert-flex">
+                                Social Exercise App
                             </div>
                         </div>
                     </div>
