@@ -68,6 +68,10 @@ export class CreateScreen extends Component {
         this.simulateClick = this.simulateClick.bind(this)
     }
 
+    state = {
+        workouts: this.props.values.workouts,
+    }
+
     join = e => {
         e.preventDefault();
         this.props.joinMeeting();
@@ -79,24 +83,45 @@ export class CreateScreen extends Component {
     }
 
     addNewItem = e => {
-        const { values } = this.props;
-        var finalArray = values.workouts
+        var finalArray = this.state.workouts;
         finalArray.push({ title: "", display: "", duration: "00:00:00", seconds: 0, type: "exercise" })
-        var workoutsObject = { workouts: finalArray }
-        this.setState(workoutsObject)
-        console.log(values.workouts)
+        this.setState({ workouts: finalArray })
+        console.log(this.state.workouts)
     }
 
     removeItem = e => {
         const i = e.currentTarget.name.split(":")[1]
-        console.log(i)
-        const { values } = this.props;
-        var finalArray = values.workouts
-        finalArray.splice(i, 1)
-        var workoutsObject = { workouts: finalArray }
+        console.log(i);
+        var finalArray = this.state.workouts;
+        finalArray.splice(i, 1);
+        this.setState({ workouts: finalArray });
+        console.log(this.state.workouts)
+    }
 
+    changeWorkouts = input => e => {
+        var listNumber = e.target.name.split(":")[1]
+        const { workouts } = this.state;
+        var finalArray = workouts
+        if (input == "duration") {
+            const seconds = e.target.value.split(':').reduce((sum, current) => {
+                return {
+                    time: sum.time + current * Math.pow(60, sum.index),
+                    index: sum.index - 1,
+                }
+            }, { time: 0, index: 2 }).time;
+            finalArray[listNumber][input] = e.target.value;
+            finalArray[listNumber]['seconds'] = seconds;
+        } else {
+            finalArray[listNumber][input] = e.target.value
+        }
+        var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject);
-        console.log(values.workouts)
+    }
+
+    getWorkouts = (listNumber, input) => {
+        const { workouts } = this.state;
+        var finalArray = workouts
+        return finalArray[listNumber][input]
     }
 
     uploadEverything = (e) => {
@@ -131,7 +156,7 @@ export class CreateScreen extends Component {
         )
 
         //Add workouts to meeting
-        const json1 = JSON.stringify({ Item: { 'id': id1, 'name': values.WorkoutName, 'workout': values.workouts }, TableName: 'workouts' });
+        const json1 = JSON.stringify({ Item: { 'id': id1, 'name': values.WorkoutName, 'workout': this.state.workouts }, TableName: 'workouts' });
         axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
             headers: {
                 'Content-Type': 'application/json'
@@ -165,10 +190,9 @@ export class CreateScreen extends Component {
             }).then(
                 res => {
                     var listNumber = e.target.name.split(":")[1]
-                    var finalArray = values.workouts
+                    var finalArray = this.state.workouts
                     finalArray[listNumber]['display'] = res.data.url
-                    var workoutsObject = { workouts: finalArray }
-                    this.setState(workoutsObject);
+                    this.setState({ workouts: finalArray });
                 }
             )
         }.bind(this);
@@ -185,31 +209,30 @@ export class CreateScreen extends Component {
 
     populateFields = e => {
         // captain - https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=6261898
-        let dictFields = {"ca": '6261898', "bw": "2200164", "im": "194135", "cm": "7488586", "bp": "5495241"}
-        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id='+dictFields[e.target.value])
-                .then((response) => {
-                    // handle success
-                    console.log(response);
-                    let workouts = [];
-                    response.data.Item.workout.forEach(element => {
-                        console.log(element)
-                        workouts.push(
-                            element
-                        )
-                    })
-                    this.props.values.workouts = workouts
-                }).catch((err) => {
-                    let workouts = [];
-                    err.response.data.Item.workout.forEach(element => {
-                        console.log(element)
-                        workouts.push(
-                            element
-                        )
-                    });
-                    console.log(workouts);
-                    this.props.values.workouts = workouts
-                    console.log(this.props.values.workouts);
+        let dictFields = { "ca": '6261898', "bw": "2200164", "im": "194135", "cm": "7488586", "bp": "5495241" }
+        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=' + dictFields[e.target.value])
+            .then((response) => {
+                // handle success
+                console.log(response);
+                let workouts = [];
+                response.data.Item.workout.forEach(element => {
+                    console.log(element)
+                    workouts.push(
+                        element
+                    )
+                })
+                this.setState({ workouts: workouts })
+            }).catch((err) => {
+                let workouts = [];
+                err.response.data.Item.workout.forEach(element => {
+                    console.log(element)
+                    workouts.push(
+                        element
+                    )
                 });
+                console.log(workouts);
+                this.setState({ workouts: workouts })
+            });
     }
 
     createWorkoutItems = () => {
@@ -217,23 +240,23 @@ export class CreateScreen extends Component {
 
         let formControl = []
 
-        for (let i = 0; i < values.workouts.length; i++) {
+        for (let i = 0; i < this.state.workouts.length; i++) {
             let index = i;
             this.myRefs[i] = React.createRef();
             let workoutSection = <div className="workout-fill-in"><label><IconButton color="primary" icon="close" size={30} name={"removeWorkout:" + i} style={styles.button} onClick={this.removeItem}><CloseIcon /></IconButton></label>
-                <Select name={"type:" + i} style={styles.textfield} onChange={changeWorkouts("type")} value={getWorkouts(index, "type")} variant="outlined">
+                <Select name={"type:" + i} style={styles.textfield} onChange={this.changeWorkouts("type")} value={this.getWorkouts(index, "type")} variant="outlined">
                     <MenuItem value="exercise">Exercise</MenuItem>
                     <MenuItem value="break">Break</MenuItem>
                 </Select>
-                <TextField label="Name of Workout" name={"title:" + i} style={styles.textfield} value={getWorkouts(index, "title")} onChange={changeWorkouts("title")} variant="outlined" />
+                <TextField label="Name of Workout" name={"title:" + i} style={styles.textfield} value={this.getWorkouts(index, "title")} onChange={this.changeWorkouts("title")} variant="outlined" />
                 <TimeField
                     name={"duration:" + i}
-                    value={getWorkouts(index, "duration")}                     // {String}   required, format '00:00' or '00:00:00'                 // {String}   required, format '00:00' or '00:00:00'
+                    value={this.getWorkouts(index, "duration")}                     // {String}   required, format '00:00' or '00:00:00'                 // {String}   required, format '00:00' or '00:00:00'
                     colon=":"
-                    onChange={changeWorkouts("duration")}
+                    onChange={this.changeWorkouts("duration")}
                     showSeconds
                     style={styles.textfield}
-                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "duration")} variant="outlined" />}
+                    input={<TextField label="Time for Interval" style={styles.textfield} value={this.getWorkouts(index, "duration")} variant="outlined" />}
                 />
 
                 <input type="file" name={"file:" + i} id={"file" + i} style={{ display: "none" }} ref={this.myRefs[i]} onChange={this.fileUploadHandler} />
@@ -287,7 +310,7 @@ export class CreateScreen extends Component {
                             </Select>
                             <WorkoutCards
                                 createWorkoutItems={this.createWorkoutItems}
-                                workouts={workouts}
+                                workouts={this.state.workouts}
                             />
                         </div>
                     </div>

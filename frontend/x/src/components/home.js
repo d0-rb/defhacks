@@ -65,31 +65,7 @@ export class Home extends Component {
         console.log(this.state);
     }
 
-    changeWorkouts = input => e => {
-        var listNumber = e.target.name.split(":")[1]
-        const { workouts } = this.state;
-        var finalArray = workouts
-        if(input == "duration"){
-            const seconds = e.target.value.split(':').reduce((sum, current) => {
-                return {
-                    time: sum.time + current * Math.pow(60, sum.index),
-                    index: sum.index - 1,
-                }
-            }, { time: 0, index: 2 }).time;
-            finalArray[listNumber][input] = e.target.value;
-            finalArray[listNumber]['seconds'] = seconds;
-        }else {
-            finalArray[listNumber][input] = e.target.value
-        }
-        var workoutsObject = { workouts: finalArray }
-        this.setState(workoutsObject);
-    }
-
-    getWorkouts = (listNumber, input) => {
-        const { workouts } = this.state;
-        var finalArray = workouts
-        return finalArray[listNumber][input]
-    }
+    
 
     render() {
         const { step, PrivateKeyCode, Name, workouts, time, workoutType, RoomName, WorkoutName, privatek, rooms } = this.state;
@@ -114,8 +90,6 @@ export class Home extends Component {
                         workouts={this.workouts}
                         values={values2}
                         time={time}
-                        changeWorkouts={this.changeWorkouts}
-                        getWorkouts={this.getWorkouts}
                     />
                 )
             case 3:
