@@ -14,6 +14,13 @@ import axios from 'axios';
 import WorkoutCards from "./workoutCards";
 import TimeField from 'react-simple-timefield';
 import { MenuItem, Select } from '@material-ui/core';
+<<<<<<< Updated upstream
+=======
+import { IconButton } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import '@ui5/webcomponents/dist/DurationPicker.js';
+>>>>>>> Stashed changes
 
 const theme = createMuiTheme({
     palette: {
@@ -38,6 +45,13 @@ const styles = {
         color: 'white',
         borderColor: "white",
         verticalAlign: "middle"
+    },
+    timepicker: {
+        borderStyle: 'solid',
+        border: '2px',
+        background: "#282c34",
+        color: 'white',
+        height: '58px'
     }
 }
 
@@ -73,9 +87,27 @@ export class CreateScreen extends Component {
         console.log(values.workouts)
     }
 
+<<<<<<< Updated upstream
     fileUploadHandler = (e) => {
         console.log(e)
         var selectedFile = e.target.files[0];
+=======
+    onFocus = e => {
+        if (e.target.name !== "true") {
+            e.target.selectionStart = 0;
+            e.target.selectionEnd = 0;
+        }
+        this.updateFocus(e, true)
+    }
+
+    updateFocus = (e, state) => {
+        e.target.name = state
+    }
+
+    uploadEverything = (e) => {
+        //Create meeting first
+        const { values, workouts } = this.props;
+>>>>>>> Stashed changes
         const fd = new FormData();
         fd.append('name', e.target.files[0].name)
         console.log(selectedFile)
@@ -119,7 +151,7 @@ export class CreateScreen extends Component {
                     onChange={changeWorkouts("time")}
                     showSeconds
                     style={styles.textfield}
-                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" />}
+                    input={<TextField label="Time for Interval" style={styles.textfield} value={getWorkouts(index, "time")} variant="outlined" onBlur={(e) => this.updateFocus(e, false)} onClick={this.onFocus} />}
                 />
                 <div className="fileUploadContainer">
                     <input type="file" name={"file:" + i} id={"file" + i} onChange={this.fileUploadHandler} />
@@ -131,7 +163,10 @@ export class CreateScreen extends Component {
 
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
-        let addMore = <div className="bottom-button-holder"><Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Exercise</Button><Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button></div>
+        let addMore = <div className="bottom-button-holder">
+            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Exercise</Button>
+            <Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button>
+        </div>
         formControl.push(addMore)
         return formControl
     }
