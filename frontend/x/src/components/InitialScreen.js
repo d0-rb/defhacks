@@ -129,9 +129,9 @@ export class InitialScreen extends Component {
                     </div>
                     <div className="overlay" id="logo-container">
                         <div className="flex">
-                            <img id="logo" src="https://yt4.ggpht.com/ytc/AKedOLTjIHmXJrT1z4ReMkvWExZnefYmw_mqTexs3Cg4dQ=s32-c-k-c0x00ffffff-no-rj" />
+                            <img id="logo" src="logo.png" />
                             <div id="app-name" className="vert-flex">
-                                Social Exercise App
+                                FitConnect
                             </div>
                         </div>
                     </div>
