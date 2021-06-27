@@ -63,6 +63,14 @@ const styles = {
         borderColor: "white",
         verticalAlign: "middle"
     },
+    avengers: {
+        margin: 10,
+        marginTop: 20,
+        color: 'white',
+        borderColor: "white",
+        verticalAlign: "middle",
+        float: "right"
+    },
     datepicker: {
         margin: 10,
         color: 'white',
@@ -84,10 +92,14 @@ export class CreateScreen extends Component {
         super(props);
 
         this.startTime = new Date();
-
+		
         this.myRefs = {};
         this.myRef = React.createRef();
         this.simulateClick = this.simulateClick.bind(this)
+    }
+
+    state = {
+        workouts: this.props.values.workouts,
     }
 
     join = e => {
@@ -111,14 +123,31 @@ export class CreateScreen extends Component {
 
     removeItem = e => {
         const i = e.currentTarget.name.split(":")[1]
-        console.log(i)
-        const { values } = this.props;
-        var finalArray = values.workouts
-        finalArray.splice(i, 1)
-        var workoutsObject = { workouts: finalArray }
+        console.log(i);
+        var finalArray = this.state.workouts;
+        finalArray.splice(i, 1);
+        this.setState({ workouts: finalArray });
+        console.log(this.state.workouts)
+    }
 
+    changeWorkouts = input => e => {
+        var listNumber = e.target.name.split(":")[1]
+        const { workouts } = this.state;
+        var finalArray = workouts
+        if (input == "duration") {
+            const seconds = e.target.value.split(':').reduce((sum, current) => {
+                return {
+                    time: sum.time + current * Math.pow(60, sum.index),
+                    index: sum.index - 1,
+                }
+            }, { time: 0, index: 2 }).time;
+            finalArray[listNumber][input] = e.target.value;
+            finalArray[listNumber]['seconds'] = seconds;
+        } else {
+            finalArray[listNumber][input] = e.target.value
+        }
+        var workoutsObject = { workouts: finalArray }
         this.setState(workoutsObject);
-        console.log(values.workouts)
     }
 	
     onFocus = e => {
@@ -132,11 +161,16 @@ export class CreateScreen extends Component {
     updateFocus = (e, state) => {
         e.target.name = state
     }
-
+	
     parseTime = time => {
         this.startTime = time;
     }
 	
+    getWorkouts = (listNumber, input) => {
+        const { workouts } = this.props;
+        var finalArray = workouts
+        return finalArray[listNumber][input]
+    }
     uploadEverything = (e) => {
         //Create meeting first
         const { values, setAppState } = this.props;
@@ -161,6 +195,62 @@ export class CreateScreen extends Component {
             headers: {
                 'Content-Type': 'application/json'
             },
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+
+        //Add workouts to meeting
+        const json1 = JSON.stringify({ Item: { 'id': id1, 'name': values.WorkoutName, 'workout': this.state.workouts }, TableName: 'workouts' });
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', json1, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            onUploadProgress: progressEvent => {
+                console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
+            }
+        }).then(
+            res => {
+                console.log(res)
+            }
+        )
+    }
+
+    onFocus = e => {
+        if (e.target.name !== "true") {
+            e.target.selectionStart = 0;
+            e.target.selectionEnd = 0;
+        }
+        this.updateFocus(e, true)
+    }
+
+    updateFocus = (e, state) => {
+        e.target.name = state
+    }
+
+    parseTime = time => {
+        console.log(time)
+    }
+
+    uploadEverything = (e) => {
+        //Create meeting first
+        const { values } = this.props;
+        const fd = new FormData();
+        var timestamp = new Date().getUTCMilliseconds();
+        var secondPortion = Math.round(Math.random() * 10000);
+        var id = timestamp + secondPortion;
+        var timestamp1 = new Date().getUTCMilliseconds();
+        var secondPortion1 = Math.round(Math.random() * 10000);
+        var id1 = timestamp1 + secondPortion1;
+        fd.append('id', id);
+        fd.append('workout_id', id1);
+        fd.append('name', values.RoomName)
+        fd.append('private', values.privatek)
+        axios.post('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/rooms', fd, {
             onUploadProgress: progressEvent => {
                 console.log(Math.round(progressEvent.loaded / progressEvent.total * 100))
             }
@@ -232,8 +322,32 @@ export class CreateScreen extends Component {
         this.myRefs[id].current.click();
     }
 
-    populateFields = () => {
-        
+    populateFields = e => {
+        // captain - https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=6261898
+        let dictFields = { "ca": '6261898', "bw": "2200164", "im": "194135", "cm": "7488586", "bp": "5495241" }
+        axios.get('https://kfx9j387v5.execute-api.us-east-1.amazonaws.com/alpha/workouts?id=' + dictFields[e.target.value])
+            .then((response) => {
+                // handle success
+                console.log(response);
+                let workouts = [];
+                response.data.Item.workout.forEach(element => {
+                    console.log(element)
+                    workouts.push(
+                        element
+                    )
+                })
+                this.setState({ workouts: workouts })
+            }).catch((err) => {
+                let workouts = [];
+                err.response.data.Item.workout.forEach(element => {
+                    console.log(element)
+                    workouts.push(
+                        element
+                    )
+                });
+                console.log(workouts);
+                this.setState({ workouts: workouts })
+            });
     }
 
     createWorkoutItems = () => {
@@ -310,7 +424,8 @@ export class CreateScreen extends Component {
 
                             <Divider />
                             <h3>Intervals</h3>
-                            <Select name={"avengers"} style={styles.textfield}  variant="outlined" onChange={this.populateFields()}>
+                            <Select name={"avengers"} style={styles.avengers} defaultValue="cu" variant="outlined" onChange={this.populateFields}>
+                                <MenuItem value="cu">Custom</MenuItem>
                                 <MenuItem value="ca">Captain America</MenuItem>
                                 <MenuItem value="bw">Black Widow</MenuItem>
                                 <MenuItem value="im">Iron Man</MenuItem>
@@ -319,7 +434,7 @@ export class CreateScreen extends Component {
                             </Select>
                             <WorkoutCards
                                 createWorkoutItems={this.createWorkoutItems}
-                                workouts={workouts}
+                                workouts={this.state.workouts}
                             />
                         </div>
                     </div>

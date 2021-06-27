@@ -60,8 +60,17 @@ div.wrapper .MuiDivider-root {
 
 div.wrapper h3 {
     padding-left: 10px;
+    padding-bottom: 10px;
+    display: inline-block;
 }
 
+.workout-fill-in {
+    padding: 5px 10px;
+}
+
+.MuiOutlinedInput-input {
+    color: white !important
+}
 .workout-fill-in {
     padding: 5px 10px;
 }
