@@ -2,7 +2,7 @@ import '../styles.css';
 import React, { Component } from 'react';
 import { LinearProgress, SvgIcon } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
@@ -15,12 +15,21 @@ const styles = {
   margin: {
     display: 'block',
     margin: 'auto',
-    'margin-top': '38px',
+    'margin-top': '48px',
+    'min-width': '24px',
+    width: '24px',
+    height: '32px',
+    'border-radius': '50%',
   },
   rightAlign: {
     position: 'absolute',
     bottom: '1px',
     left: '1px',
+  },
+  centerArrow: {
+    position: 'relative',
+    bottom: '-2px',
+    left: '-7px',
   }
 };
 
@@ -45,7 +54,7 @@ class Timeline extends Component {
   render() {
     const { workout, time, length, classes } = this.props;
     const { open } = this.state;
-    const arrowIcon = (open) ? <ArrowUpwardIcon fontSize="inherit" /> : <ArrowDownwardIcon fontSize="inherit" />;
+    const arrowIcon = (open) ? <ArrowUpwardIcon fontSize="inherit" className={classes.centerArrow} /> : <ArrowDownwardIcon fontSize="inherit" className={classes.centerArrow} />;
 
     let markers = [];
 
@@ -74,9 +83,9 @@ class Timeline extends Component {
           {markers}
         </div>
         <LinearProgress className={classes.root} variant="determinate" value={Math.min(100, Math.max(0, 100 * time/length))} />
-        <IconButton aria-label="timeline" color="primary" className={classes.margin} onClick={() => this.handleClick()}>
+        <Button variant="contained" aria-label="timeline" color="primary" className={classes.margin} onClick={() => this.handleClick()}>
           {arrowIcon}
-        </IconButton>
+        </Button>
       </>
     );
   }
