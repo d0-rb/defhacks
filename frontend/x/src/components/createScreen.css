@@ -78,13 +78,14 @@ div.wrapper h3 {
     border-width: 0px;
     stroke: white !important;
 }
+
 .react-datetime-picker__wrapper {
     border-color: white !important;
-    border:normal !important;
+    border: normal !important;
     border-radius: 4px !important;
     height: 56px !important;
-    vertical-align:middle !important;
-    align-items:center !important;
+    vertical-align: middle !important;
+    align-items: center !important;
 }
 
 .react-datetime-picker {

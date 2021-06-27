@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MuiThemeProvider, StylesProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 import { createMuiTheme } from "@material-ui/core/styles";
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -137,6 +137,7 @@ export class CreateScreen extends Component {
     uploadEverything = (e) => {
         //Create meeting first
         const { values } = this.props;
+		
         var timestamp = new Date().getUTCMilliseconds();
         var secondPortion = Math.round(Math.random() * 100000000);
         var id = timestamp + secondPortion;
@@ -257,7 +258,7 @@ export class CreateScreen extends Component {
         let addMore1 = <div><Divider /><br /></div>
         formControl.push(addMore1)
         let addMore = <div className="bottom-button-holder">
-            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Exercise</Button>
+            <Button variant="contained" color="secondary" style={styles.button} onClick={this.addNewItem}>Add Interval</Button>
             <Button variant="contained" color="primary" style={styles.button} onClick={this.uploadEverything}>Create Exercise</Button>
         </div>
         formControl.push(addMore)
@@ -279,16 +280,16 @@ export class CreateScreen extends Component {
                             <TextField id="name2" label="Name" style={styles.textfield} onChange={fieldChangeMaster('displayName')} defaultValue={values.Name} variant="outlined" />
                             <TextField id="rn" label="Room Name" style={styles.textfield} onChange={fieldChangeMaster('roomName')} defaultValue={values.RoomName} variant="outlined" />
                             <TextField id="wn" label="Workout Name" style={styles.textfield} onChange={fieldChange('WorkoutName')} defaultValue={values.WorkoutName} variant="outlined" />
-                            <DateTimePicker value={new Date()} onChange={this.parseTime} style={styles.datepicker} disableClock='true' amPmAriaLabel='test' />
+                            <DateTimePicker value={new Date()} onChange={this.parseTime} style={styles.datepicker} disableClock={true} amPmAriaLabel='test' />
                             <div className="formContainer">
                                 <FormControl component="fieldset">
                                     <RadioGroup aria-label="private" name="private1" value={values.privatek} onChange={fieldChange('privatek')}>
-                                        <FormControlLabel value="public" control={<GreenRadio/>} label="Public Meeting" />
+                                        <FormControlLabel value="public" control={<GreenRadio />} label="Public Meeting" />
                                         <FormControlLabel value="private" control={<GreenRadio />} label="Private Meeting" />
                                     </RadioGroup>
                                 </FormControl>
                             </div>
-                            
+
                             <Divider />
                             <h3>Intervals</h3>
                             <Select name={"avengers"} style={styles.textfield}  variant="outlined" onChange={this.populateFields()}>
